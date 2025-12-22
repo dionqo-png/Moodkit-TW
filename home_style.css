@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #C9E1C2;
+    font-family: 'Courier New', Courier, monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #000;
+}
+
+/* Main */
+header {
+    padding: 3rem 4rem 1rem 4rem;
+}
+
+h1 {
+    font-size: 5rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3rem 4rem;
+    margin: 0;
+}
+
+.activity-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 150px;
+}
+
+.activity-card.right {
+    background-color: black;
+    color: white;
+}
+
+.icon-box {
+    width: 300px;
+    padding-left: 150px;
+    height: 150px;
+    background-color: #000;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-box.right {
+    width: 150px;
+    padding-left: 0;
+}
+
+.icon-box img {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    padding: 10%;   
+}
+
+.card-text {
+    height: 100% - 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.card-text h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.card-text p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Footer */
+footer {
+    background-color: #000;
+    color: #fff;
+    padding: 1.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-top: 4rem;
+}
+
+footer img {
+    width: 1em;
+    height: 1em;
+}
+
+.language-select {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}   

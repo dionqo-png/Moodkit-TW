@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/imgs/favicon.png" />
+    <link rel="stylesheet" href="palette_style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodKit</title>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-left">
+            <a class="logo-btn" href="index.html">LOGO</a>
+            <div id="bar"></div>
+            <nav class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="sound.html">Sound Settings</a>
+            </nav>
+        </div>
+
+        <div class="toggle-switch">
+            <div class="toggle-knob"></div>
+            <span id="audio">🔊</span>
+        </div>
+    </header>
+
+    <h1>Can you guess the correct RGB code?</h1>
+
+    <div id="main-minigame">
+        <div id="color-frame"></div>
+        <div id="slider-container">
+                <input type="range" min="0" max="255" value="127" class="slider red">
+                <input type="range" min="0" max="255" value="127" class="slider green">
+                <input type="range" min="0" max="255" value="127" class="slider blue">
+                <button>SUBMIT MY GUESS</button>
+        </div>      
+    </div>
+
+    <footer>
+        <div class="language-select">
+            <span>🌐</span> English <img src="imgs/down.png">
+        </div>
+        <div class="copyright">
+            Copyright © 2025. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Color Palette Generator</title>
+
+  <!-- p5.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+
+  <!-- chroma.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+
+  <!-- O TEU JS -->
+  <script src="colorpalette.js" defer></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #111;
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    #sketch-container {
+      margin-top: 8px;
+      padding: 16px 18px 12px;
+      border-radius: 18px;
+      background: #050505;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #sketch-container canvas {
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+      max-width: 100%;
+      height: auto !important;
+    }
+
+    #sketch-container input[type="file"] {
+      margin-top: 10px;
+      padding: 6px 10px;
+      font-size: 12px;
+      background: #222;
+      color: #eee;
+      border: 1px solid #444;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #sketch-container input[type="file"]::-webkit-file-upload-button {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prime a barra de espaço para gerar nova paleta</h1>
+
+  <!-- o canvas e o input vão ficar aqui dentro -->
+  <div id="sketch-container"></div>
+</body>
+</html>
