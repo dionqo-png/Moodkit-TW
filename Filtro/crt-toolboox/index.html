@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CRT Toolbox XP</title>
+  <link rel="preload" href="./styles.css" as="style">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="topbar" role="banner">
+    <div class="brand">
+      <div class="brand-dot" aria-hidden="true"></div>
+      <div>
+        <div class="brand-title">CRT Toolbox XP</div>
+        <div class="brand-sub">Retro video lab</div>
+      </div>
+    </div>
+    <div class="top-actions" role="toolbar" aria-label="Source controls">
+      <div class="segmented" role="tablist" aria-label="Source">
+        <button id="tabUpload" class="seg-btn is-active" role="tab" aria-selected="true" aria-controls="uploadPanel" type="button">Upload</button>
+        <button id="tabWebcam" class="seg-btn" role="tab" aria-selected="false" aria-controls="webcamPanel" type="button">Webcam</button>
+      </div>
+      <div class="actions">
+        <label class="file-btn" for="fileInput">
+          <span>Choose image</span>
+          <input id="fileInput" type="file" accept="image/png,image/jpeg">
+        </label>
+        <button class="btn primary" id="startWebcamBtn" type="button">Start webcam</button>
+        <button class="btn" id="stopWebcamBtn" type="button" disabled>Stop</button>
+        <button class="btn" id="captureBtn" type="button" disabled>Capture</button>
+        <button class="btn" id="recordBtn" type="button" disabled>Record 5s</button>
+        <button class="btn" id="exportAnimBtn" type="button" disabled>Export 3s</button>
+        <button class="btn" id="pauseMotionBtn" type="button">Pause motion</button>
+        <button class="btn primary" id="saveImageBtn" type="button" disabled>Save image</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell">
+    <aside class="sidebar" role="navigation" aria-label="Filter selection">
+      <div class="sidebar-header">
+        <div class="sidebar-title">Filters</div>
+        <div class="sidebar-sub">Tap to switch</div>
+      </div>
+      <div class="filter-list" role="list">
+        <button class="filter-btn is-active" type="button" data-filter="off">No filter</button>
+        <button class="filter-btn" type="button" data-filter="crt">CRT</button>
+        <button class="filter-btn" type="button" data-filter="ascii">ASCII</button>
+        <button class="filter-btn" type="button" data-filter="ca">Cellular Automata</button>
+        <button class="filter-btn" type="button" data-filter="distort">Distort</button>
+      </div>
+    </aside>
+
+    <main class="preview" aria-label="Preview">
+      <div class="preview-frame">
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="outCanvas" width="402" height="402" aria-label="Output canvas" tabindex="0"></canvas>
+        </div>
+        <div class="letterbox-hint" id="letterboxHint" aria-live="polite">Letterboxed to fit</div>
+      </div>
+      <div class="statusbar" role="status">
+        <div class="pills">
+          <span class="pill" id="pillRenderer">Renderer: --</span>
+          <span class="pill" id="pillFPS">FPS: --</span>
+          <span class="pill" id="pillSource">Source: Upload</span>
+        </div>
+        <div class="tiny">Shortcuts: <kbd>U</kbd> upload <kbd>W</kbd> webcam <kbd>Space</kbd> toggle <kbd>S</kbd> save</div>
+      </div>
+      <div id="rendererStatus" class="pill pill-soft" aria-live="polite"></div>
+      <div id="errorBox" class="error-box" role="alert" aria-live="assertive"></div>
+      <video id="webcamVideo" playsinline muted></video>
+    </main>
+
+    <section class="panel" aria-label="Control panel">
+      <div class="panel-header">
+        <div class="panel-title">Control panel</div>
+        <div class="panel-sub">Compact defaults. Expand for more.</div>
+      </div>
+      <div class="panel-body">
+        <div class="section">
+          <div class="section-title">Canvas & Source</div>
+          <div class="row">
+            <label class="field">
+              <span class="label">Canvas size</span>
+              <select id="canvasSize" class="select">
+                <option value="320">320 px</option>
+                <option value="402" selected>402 px</option>
+                <option value="512">512 px</option>
+                <option value="720">720 px</option>
+              </select>
+            </label>
+            <div class="control">
+              <label for="canvasZoom">Zoom</label>
+              <input id="canvasZoom" type="range" min="0.5" max="2" step="0.01" data-key="global.zoom">
+              <output id="canvasZoomVal" class="val"></output>
+            </div>
+            <label class="field checkbox">
+              <input id="showEffect" type="checkbox" checked>
+              <span>Show effects</span>
+            </label>
+          </div>
+          <div class="row">
+            <button class="btn" id="clearCanvasBtn" type="button">Clear</button>
+            <button class="btn" id="resetBtn" type="button">Reset state</button>
+            <button class="btn" id="savePresetBtn" type="button">Save preset</button>
+            <label class="field">
+              <span class="label">Preset</span>
+              <select id="presetSelect" class="select" aria-label="Saved presets"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Image preprocessing</div>
+          <div class="grid2">
+            <div class="control">
+              <label for="preBlur">Denoise / blur</label>
+              <input id="preBlur" type="range" min="0" max="3" step="0.01" data-key="pre.blur">
+              <output id="preBlurVal" class="val"></output>
+            </div>
+            <div class="control">
+              <label for="preGrain">Grain</label>
+              <input id="preGrain" type="range" min="0" max="1" step="0.01" data-key="pre.grain">
+              <output id="preGrainVal" class="val"></output>
+            </div>
+            <div class="control">
+              <label for="preGamma">Gamma</label>
+              <input id="preGamma" type="range" min="0.5" max="2.5" step="0.01" data-key="pre.gamma">
+              <output id="preGammaVal" class="val"></output>
+            </div>
+            <div class="control">
+              <label for="preBlack">Black point</label>
+              <input id="preBlack" type="range" min="0" max="64" step="1" data-key="pre.blackPoint">
+              <output id="preBlackVal" class="val"></output>
+            </div>
+            <div class="control">
+              <label for="preWhite">White point</label>
+              <input id="preWhite" type="range" min="160" max="255" step="1" data-key="pre.whitePoint">
+              <output id="preWhiteVal" class="val"></output>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion">
+          <button class="accordion-toggle" type="button" aria-expanded="false" data-accordion-target="#filtersAccordion">
+            More filters & options
+          </button>
+          <div class="accordion-panel" id="filtersAccordion" hidden>
+            <div class="section color-section" data-filter-section="color">
+              <div class="section-title">Color palette</div>
+              <div class="row">
+                <label class="field">
+                  <span class="label">Palette</span>
+                  <select id="paletteMode" class="select" data-key="color.mode">
+                    <option value="off" selected>Off</option>
+                    <option value="sepia">Sepia</option>
+                    <option value="mono">Grayscale</option>
+                    <option value="high">High contrast</option>
+                    <option value="vapor">Vaporwave</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="label">Intensity</span>
+                  <input id="paletteIntensity" type="range" min="0" max="1" step="0.01" data-key="color.intensity">
+                  <output id="paletteIntensityVal" class="val"></output>
+                </label>
+              </div>
+            </div>
+
+            <div class="section crt-section is-disabled" data-filter-section="crt">
+              <div class="section-title">CRT</div>
+              <div class="row">
+                <label class="field">
+                  <span class="label">Type</span>
+                  <select id="crtType" class="select">
+                    <option value="monitor" selected>Monitor</option>
+                    <option value="tv">TV</option>
+                    <option value="lcd">LCD</option>
+                  </select>
+                </label>
+                <label class="field">
+                  <span class="label">Distortion</span>
+                  <input id="crtDistortion" type="range" min="0" max="0.12" step="0.001" data-key="crt.distortion">
+                  <output id="crtDistortionVal" class="val"></output>
+                </label>
+              </div>
+              <div class="grid2">
+                <div class="control">
+                  <label for="crtDotScale">Dot scale</label>
+                  <input id="crtDotScale" type="range" min="0" max="1.5" step="0.01" data-key="crt.dotScale">
+                  <output id="crtDotScaleVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="crtDotPitch">Dot pitch</label>
+                  <input id="crtDotPitch" type="range" min="0.4" max="2.4" step="0.01" data-key="crt.dotPitch">
+                  <output id="crtDotPitchVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="crtFalloff">Falloff</label>
+                  <input id="crtFalloff" type="range" min="0" max="0.6" step="0.001" data-key="crt.falloff">
+                  <output id="crtFalloffVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="crtGlowRadius">Glow radius</label>
+                  <input id="crtGlowRadius" type="range" min="0" max="1" step="0.01" data-key="crt.glowRadius">
+                  <output id="crtGlowRadiusVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="crtGlowIntensity">Glow intensity</label>
+                  <input id="crtGlowIntensity" type="range" min="0" max="1" step="0.01" data-key="crt.glowIntensity">
+                  <output id="crtGlowIntensityVal" class="val"></output>
+                </div>
+              </div>
+            </div>
+
+            <div class="section" data-filter-section="crt">
+              <div class="section-title">Bloom</div>
+              <div class="radio">
+                <label><input type="radio" name="bloomMode" value="screen"> Screen</label>
+                <label><input type="radio" name="bloomMode" value="light"> Light</label>
+                <label><input type="radio" name="bloomMode" value="hdr" checked> HDR</label>
+              </div>
+              <div class="grid2">
+                <div class="control">
+                  <label for="bloomThreshold">Threshold</label>
+                  <input id="bloomThreshold" type="range" min="0" max="2" step="0.01" data-key="bloom.threshold">
+                  <output id="bloomThresholdVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="bloomIntensity">Intensity</label>
+                  <input id="bloomIntensity" type="range" min="0" max="3" step="0.01" data-key="bloom.intensity">
+                  <output id="bloomIntensityVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="bloomRadius">Radius</label>
+                  <input id="bloomRadius" type="range" min="0.1" max="4" step="0.01" data-key="bloom.radius">
+                  <output id="bloomRadiusVal" class="val"></output>
+                </div>
+              </div>
+            </div>
+
+            <div class="section" data-filter-section="crt">
+              <div class="section-title">Convergence</div>
+              <div class="grid2">
+                <div class="control">
+                  <label for="convRX">Red X</label>
+                  <input id="convRX" type="range" min="-0.05" max="0.05" step="0.001" data-key="conv.rX">
+                  <output id="convRXVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="convRY">Red Y</label>
+                  <input id="convRY" type="range" min="-0.05" max="0.05" step="0.001" data-key="conv.rY">
+                  <output id="convRYVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="convBX">Blue X</label>
+                  <input id="convBX" type="range" min="-0.05" max="0.05" step="0.001" data-key="conv.bX">
+                  <output id="convBXVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="convBY">Blue Y</label>
+                  <input id="convBY" type="range" min="-0.05" max="0.05" step="0.001" data-key="conv.bY">
+                  <output id="convBYVal" class="val"></output>
+                </div>
+              </div>
+            </div>
+
+            <div class="section ascii-section is-disabled" data-filter-section="ascii">
+              <div class="section-title">ASCII</div>
+              <div class="row">
+                <label class="field checkbox">
+                  <input id="asciiUseCRT" type="checkbox" data-key="ascii.useCRT">
+                  <span>Enable CRT lens inside ASCII</span>
+                </label>
+              </div>
+              <div class="grid2">
+                <div class="control">
+                  <label for="asciiCell">Cell size</label>
+                  <input id="asciiCell" type="range" min="4" max="32" step="1" data-key="ascii.cellSize">
+                  <output id="asciiCellVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="asciiContrast">Contrast</label>
+                  <input id="asciiContrast" type="range" min="0.5" max="2.5" step="0.01" data-key="ascii.contrast">
+                  <output id="asciiContrastVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="asciiGamma">Gamma</label>
+                  <input id="asciiGamma" type="range" min="0.5" max="2.5" step="0.01" data-key="ascii.gamma">
+                  <output id="asciiGammaVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="asciiFg">FG mix</label>
+                  <input id="asciiFg" type="range" min="0" max="1" step="0.01" data-key="ascii.fgMix">
+                  <output id="asciiFgVal" class="val"></output>
+                </div>
+              </div>
+              <div class="row">
+                <label class="field">
+                  <span class="label">Charset</span>
+                  <select id="asciiCharset" class="select" data-key="ascii.charset">
+                    <option value="simple">Simple</option>
+                    <option value="classic" selected>Classic</option>
+                    <option value="dense">Dense</option>
+                  </select>
+                </label>
+                <label class="field checkbox">
+                  <input id="asciiColor" type="checkbox" data-key="ascii.color">
+                  <span>Colorize</span>
+                </label>
+                <label class="field checkbox">
+                  <input id="asciiInvert" type="checkbox" data-key="ascii.invert">
+                  <span>Invert</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="section ca-section is-disabled" data-filter-section="ca">
+              <div class="section-title">Cellular Automata</div>
+              <div class="grid2">
+                <div class="control">
+                  <label for="caThreshold">Threshold</label>
+                  <input id="caThreshold" type="range" min="0" max="1" step="0.001" data-key="ca.threshold">
+                  <output id="caThresholdVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="caCellSize">Cell size</label>
+                  <input id="caCellSize" type="range" min="2" max="32" step="1" data-key="ca.cellSize">
+                  <output id="caCellSizeVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="caSteps">Steps</label>
+                  <input id="caSteps" type="range" min="1" max="40" step="1" data-key="ca.steps">
+                  <output id="caStepsVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="caMix">Mix</label>
+                  <input id="caMix" type="range" min="0" max="1" step="0.01" data-key="ca.mix">
+                  <output id="caMixVal" class="val"></output>
+                </div>
+              </div>
+              <div class="row">
+                <label class="field">
+                  <span class="label">Type</span>
+                  <select id="caType" class="select" data-key="ca.type">
+                    <option value="classic" selected>Classic</option>
+                    <option value="ltl">LTL</option>
+                    <option value="mncab">MNCAB</option>
+                    <option value="mncc">MNCC</option>
+                  </select>
+                </label>
+              </div>
+              <div class="grid2">
+                <div class="control">
+                  <label for="caSurviveLo">Survive low</label>
+                  <input id="caSurviveLo" type="range" min="0" max="8" step="1" data-key="ca.sLo">
+                  <output id="caSurviveLoVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="caSurviveHi">Survive high</label>
+                  <input id="caSurviveHi" type="range" min="0" max="8" step="1" data-key="ca.sHi">
+                  <output id="caSurviveHiVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="caBirthLo">Birth low</label>
+                  <input id="caBirthLo" type="range" min="0" max="8" step="1" data-key="ca.bLo">
+                  <output id="caBirthLoVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="caBirthHi">Birth high</label>
+                  <input id="caBirthHi" type="range" min="0" max="8" step="1" data-key="ca.bHi">
+                  <output id="caBirthHiVal" class="val"></output>
+                </div>
+              </div>
+              <div class="row">
+                <label class="field">
+                  <span class="label">BG (hex)</span>
+                  <input id="caBgHex" class="input" type="text" value="#0b0b0b" data-key="ca.bgHex">
+                </label>
+                <label class="field">
+                  <span class="label">FG (hex)</span>
+                  <input id="caFgHex" class="input" type="text" value="#f2f2f2" data-key="ca.fgHex">
+                </label>
+              </div>
+            </div>
+
+            <div class="section distort-section is-disabled" data-filter-section="distort">
+              <div class="section-title">Distort</div>
+              <div class="row">
+                <label class="file-btn" for="distortMapInput">
+                  <span>Select distortion map</span>
+                  <input id="distortMapInput" type="file" accept="image/png,image/jpeg">
+                </label>
+                <label class="field checkbox">
+                  <input id="distortPre" type="checkbox" data-key="distort.preprocess">
+                  <span>Preprocess distortion base</span>
+                </label>
+              </div>
+              <div class="grid2">
+                <div class="control">
+                  <label for="distortThreshold">Threshold</label>
+                  <input id="distortThreshold" type="range" min="0" max="1" step="0.001" data-key="distort.threshold">
+                  <output id="distortThresholdVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="distortX">X shift</label>
+                  <input id="distortX" type="range" min="0" max="0.25" step="0.001" data-key="distort.x">
+                  <output id="distortXVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="distortY">Y shift</label>
+                  <input id="distortY" type="range" min="0" max="0.25" step="0.001" data-key="distort.y">
+                  <output id="distortYVal" class="val"></output>
+                </div>
+                <div class="control">
+                  <label for="distortScale">Scale</label>
+                  <input id="distortScale" type="range" min="0.5" max="6" step="0.01" data-key="distort.scale">
+                  <output id="distortScaleVal" class="val"></output>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
