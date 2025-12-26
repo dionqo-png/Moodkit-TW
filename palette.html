@@ -5,50 +5,23 @@
     <meta charset="UTF-8">
     <link rel="icon" href="/imgs/favicon.png" />
     <link rel="stylesheet" href="palette_style.css">
+    <script src="global.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoodKit</title>
+    title>Color Palette Generator</title>
+
+    <!-- p5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+    <!-- chroma.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+    <!-- O TEU JS -->
+    <script src="colorpalette.js" defer></script>
+
 </head>
 
 <body>
+  <h1>Prime a barra de espaço para gerar nova paleta</h1>
 
-    <header>
-        <div class="header-left">
-            <a class="logo-btn" href="index.html">LOGO</a>
-            <div id="bar"></div>
-            <nav class="nav-links">
-                <a href="home.html">Home</a>
-                <a href="sound.html">Sound Settings</a>
-            </nav>
-        </div>
-
-        <div class="toggle-switch">
-            <div class="toggle-knob"></div>
-            <span id="audio">🔊</span>
-        </div>
-    </header>
-
-    <a id="RGB-btn" href="palette_minigame.html" data-tooltip="Want to test your colour identification skills?">
-            <img src="imgs/RGB.png"></img>
-    </a>
-
-    <div id="main">
-        <h1>Color Palette Generator</h1>
-
-        <div class="upload-container">
-            <p class="upload-text">Drop or upload an image file</p>
-            <button class="upload-btn">Upload</button>
-        </div>
-    </div>
-
-    <footer>
-        <div class="language-select">
-            <span>🌐</span> English <img src="imgs/down.png">
-        </div>
-        <div class="copyright">
-            Copyright © 2025. All rights reserved.
-        </div>
-    </footer>
-
+  <!-- o canvas e o input vão ficar aqui dentro -->
+  <div id="sketch-container"></div>
 </body>
-
 </html>

@@ -1,15 +1,26 @@
+/* global.js */
+
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. INJECT HEADER
+    
+    // 1. INJECT HEADER CSS (New Step)
+    const cssLink = document.createElement("link");
+    cssLink.rel = "stylesheet";
+    cssLink.href = "header.css"; // Make sure this file exists!
+    document.head.appendChild(cssLink);
+
+    // 2. INJECT HEADER HTML
     fetch('header.html')
         .then(response => response.text())
         .then(data => {
             document.body.insertAdjacentHTML('afterbegin', data);
             highlightCurrentPage();
             
-            // 2. INIT AUDIO AFTER HEADER IS READY
+            // 3. INIT AUDIO
             initAudioSystem();
         });
 });
+
+// ... (Keep the rest of your functions: highlightCurrentPage, initAudioSystem) ...
 
 function highlightCurrentPage() {
     const currentPath = window.location.pathname.split("/").pop() || "index.html";
