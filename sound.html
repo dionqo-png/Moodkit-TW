@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/imgs/favicon.png" />
@@ -9,50 +8,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoodKit</title>
 </head>
-
 <body>
-
 
     <div id="main">
         <h1 class="title">AUDIO</h1>
 
-        <div class="sound-bubble fire-main">
-            <span style="font-size: 4rem;">🔥</span>
+        <div id="retro-container">
+        
+        <div class="sound-bubble fire-master">
+            <span style="font-size: 3rem;">🕯️</span>
         </div>
-        <div class="sound-bubble fire-small">
-            <span style="font-size: 2rem;">🕯️</span>
+        <div class="sound-bubble fire-layer-flame">
+            <span style="font-size: 1.5rem;">🔥</span>
         </div>
-
-        <div class="sound-bubble rain">
-            <span style="font-size: 5rem; color: white;">🌧️</span>
-        </div>
-        <div class="sound-bubble water">
-            <span style="font-size: 3rem; color: white;">💧</span>
-        </div>
-        <div class="sound-bubble thunder">
-            <span style="font-size: 2rem;">🌩️</span>
+        <div class="sound-bubble fire-layer-wood">
+            <span style="font-size: 1.5rem;">🪵</span>
         </div>
 
-        <div class="sound-bubble forest">
-            <span style="font-size: 5rem; color: white;">🌲</span>
+        <div class="sound-bubble water-master">
+            <span style="font-size: 4rem; color: white;">🌧️</span>
         </div>
-        <div class="sound-bubble bird">
-            <span style="font-size: 2rem;">🐦</span>
+        <div class="sound-bubble water-layer-rain">
+            <span style="font-size: 2rem;">☔</span>
         </div>
-        <div class="sound-bubble leaves">
-            <span style="font-size: 2.5rem;">🍃</span>
+        <div class="sound-bubble water-layer-thunder">
+            <span style="font-size: 1.5rem;">🌩️</span>
         </div>
-        <div class="sound-bubble wind">
-            <span style="font-size: 2.5rem;">💨</span>
+
+        <div class="sound-bubble earth-master">
+            <span style="font-size: 4rem; color: white;">🌲</span>
+        </div>
+        <div class="sound-bubble earth-layer-forest">
+            <span style="font-size: 2rem;">🍃</span>
+        </div>
+        <div class="sound-bubble earth-layer-bird">
+            <span style="font-size: 1.5rem;">🐦</span>
+        </div>
+        <div class="sound-bubble earth-layer-wind">
+            <span style="font-size: 2rem;">💨</span>
         </div>
 
         <div class="master-control">
-            <span>-</span>
+            <span id="vol-icon">🔊</span>
             <div class="slider-track">
                 <div class="slider-fill"></div>
             </div>
-            <span>+</span>
         </div>
+
+    </div>
 
     </div>
 
@@ -67,4 +70,168 @@
 
 </body>
 
+<script>
+    // Initialize SoundManager immediately
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize SoundManager if it exists
+        if (typeof SoundManager !== 'undefined') {
+            SoundManager.init();
+            initSoundPage();
+        }
+    });
+
+    function initSoundPage() {
+        const sliderFill = document.querySelector('.slider-fill');
+        const sliderTrack = document.querySelector('.slider-track');
+        const volIcon = document.getElementById('vol-icon');
+
+        // MAPPING: Define who does what
+        const bubbles = [
+            // --- FIRE ---
+            { class: 'fire-master',      profile: 'fire',  type: 'master' },
+            { class: 'fire-layer-flame', profile: 'fire',  type: 'feature', key: 'flame' },
+            { class: 'fire-layer-wood',  profile: 'fire',  type: 'feature', key: 'wood' },
+            
+            // --- WATER ---
+            { class: 'water-master',      profile: 'water', type: 'master' },
+            { class: 'water-layer-rain',  profile: 'water', type: 'feature', key: 'rain' },
+            { class: 'water-layer-thunder', profile: 'water', type: 'feature', key: 'thunder' },
+
+            // --- EARTH ---
+            { class: 'earth-master',       profile: 'earth', type: 'master' },
+            { class: 'earth-layer-forest', profile: 'earth', type: 'feature', key: 'forest' },
+            { class: 'earth-layer-bird',   profile: 'earth', type: 'feature', key: 'birds' },
+            { class: 'earth-layer-wind',   profile: 'earth', type: 'feature', key: 'wind' }
+        ];
+
+        // 1. SETUP CLICKS
+        bubbles.forEach(b => {
+            const el = document.querySelector('.' + b.class);
+            if (!el) return;
+
+            el.addEventListener('click', () => {
+                // Ensure Audio Context is ready
+                if (!SoundManager.ctx) {
+                    SoundManager.setupContext();
+                }
+
+                // Highlight Selection
+                document.querySelectorAll('.sound-bubble').forEach(d => {
+                    d.style.border = "none";
+                    d.style.borderRadius = "50%";
+                });
+                el.style.border = "3px solid white";
+
+                if (b.type === 'master') {
+                    // Switch Profile
+                    SoundManager.activateProfile(b.profile);
+                    volIcon.innerText = "🎚️"; // Icon indicates Master Mix
+                    
+                    // Update slider to show master volume
+                    const masterVol = SoundManager.profiles[b.profile].masterVol;
+                    sliderFill.style.width = (masterVol * 100) + "%";
+                } else {
+                    // Toggle Feature
+                    SoundManager.toggleFeature(b.profile, b.key);
+                    volIcon.innerText = "🔊"; // Icon indicates Channel Vol
+                    
+                    // Update slider to show feature volume
+                    const featureVol = SoundManager.profiles[b.profile].sounds[b.key].vol;
+                    sliderFill.style.width = (featureVol * 100) + "%";
+                }
+                updateVisuals();
+            });
+        });
+
+        // 2. SLIDER LOGIC - FIXED
+        if (sliderTrack) {
+            let dragging = false;
+
+            function updateSlider(e) {
+                if (!SoundManager.currentSelection) {
+                    console.warn("Please select a bubble first!");
+                    return;
+                }
+
+                const rect = sliderTrack.getBoundingClientRect();
+                const percent = Math.max(
+                    0,
+                    Math.min(1, (e.clientX - rect.left) / rect.width)
+                );
+
+                // Update volume
+                SoundManager.adjustVolume(percent);
+                
+                // Update slider visual
+                sliderFill.style.width = (percent * 100) + "%";
+                
+                // Update icon based on what's being controlled
+                if (SoundManager.currentSelection.type === 'master') {
+                    volIcon.innerText = "🎚️";
+                } else {
+                    volIcon.innerText = "🔊";
+                }
+            }
+
+            sliderTrack.addEventListener("mousedown", (e) => {
+                dragging = true;
+                updateSlider(e);
+                e.preventDefault(); // Prevent text selection
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (dragging) {
+                    updateSlider(e);
+                    e.preventDefault();
+                }
+            });
+
+            document.addEventListener("mouseup", () => {
+                dragging = false;
+            });
+
+            // Also allow click to set position
+            sliderTrack.addEventListener("click", (e) => {
+                if (!dragging) {
+                    updateSlider(e);
+                }
+            });
+        }
+
+        // 3. VISUAL STATE MANAGER
+        function updateVisuals() {
+            const sm = SoundManager;
+            bubbles.forEach(b => {
+                const el = document.querySelector('.' + b.class);
+                if (!el) return;
+
+                if (sm.activeProfile !== b.profile) {
+                    // Completely Inactive Profile
+                    el.style.opacity = "0.3";
+                    el.style.filter = "grayscale(100%)";
+                    el.style.transform = "scale(0.9)";
+                    el.style.pointerEvents = "auto";
+                    el.style.border = "none";
+                } else {
+                    // Active Profile
+                    if (b.type === 'master') {
+                        // Master always fully visible if profile active
+                        el.style.opacity = "1";
+                        el.style.filter = "none";
+                        el.style.transform = "scale(1.1)";
+                    } else {
+                        // Feature depends on if it's running
+                        const isActive = sm.profiles[b.profile].sounds[b.key].active;
+                        el.style.opacity = isActive ? "1" : "0.5";
+                        el.style.filter = isActive ? "drop-shadow(0 0 8px white)" : "none";
+                        el.style.transform = isActive ? "scale(1.05)" : "scale(1)";
+                    }
+                }
+            });
+        }
+
+        // Initial visual update
+        updateVisuals();
+    }
+</script>
 </html>

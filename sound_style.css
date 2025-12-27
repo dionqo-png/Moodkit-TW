@@ -1,5 +1,20 @@
 /* sound_style.css */
 
+:root {
+  /* Win95 Greyscale Palette */
+  --bg: #050505;
+  --grid: rgba(255, 255, 255, 0.1);
+  --text: #ffffff;
+  --border-light: #ffffff;
+  --border-dark: #444444;
+  --panel: #1a1a1a;
+  
+  /* Profile Colors (Neon variants for black background) */
+  --fire-glow: #ff5500;
+  --water-glow: #0088ff;
+  --earth-glow: #00ff55;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -7,39 +22,47 @@
 }
 
 body {
-    background-color: #C9E1C2;
-    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--bg);
+    /* The Abstract Grid Background */
+    background-image:
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+        linear-gradient(0deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+    
+    color: var(--text);
+    font-family: 'Courier New', Courier, monospace; /* Keeping Courier for that 'Terminal' feel */
     height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    color: #000;
 }
 
-/* NOTE: All Header CSS is now gone from here! It is loaded by global.js */
-
-/* Main Content Styles */
+/* --- MAIN CANVAS --- */
 #main {
     flex: 1;
     position: relative;
     width: 100%;
     height: 100%;
+    /* Add a subtle vignette to focus the center */
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
 }
 
 .title {
     position: absolute;
-    top: 0;
-    left: 2%;
-    font-size: 8rem;
-    font-family: 'Arial Black', Arial, sans-serif;
-    letter-spacing: 5px;
-    text-transform: uppercase;
+    top: 20px;
+    left: 20px;
+    font-size: 6rem; /* Slightly smaller to fit UI */
+    font-family: "MS Sans Serif","Tahoma",sans-serif;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--text); /* Outline text effect */
+    letter-spacing: -2px;
     pointer-events: none;
     z-index: 1;
+    opacity: 0.3;
 }
 
-/* Bubbles */
+/* --- BUBBLES (Planets) --- */
 .sound-bubble {
     position: absolute;
     border-radius: 50%;
@@ -47,70 +70,137 @@ body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: transform 0.2s ease;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    
+    /* The "Windows 95" Wireframe Look */
+    border: 2px solid var(--text); 
+    background-size: cover;
+    background-position: center;
+    
+    /* Smooth transition for the JS opacity changes */
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    
+    /* Text/Icon Style */
+    font-size: 2rem;
+    text-shadow: 0 2px 0 #000;
 }
 
+/* Hover Effect: Glitchy shift */
 .sound-bubble:hover {
-    transform: scale(1.05);
-    z-index: 5;
+    transform: translate(-2px, -2px); /* Pop up slightly */
+    box-shadow: 4px 4px 0px var(--border-dark); /* Retro shadow */
+    z-index: 10;
+    border-color: #fff;
 }
 
-/* Specific Bubble Positions */
-.forest { width: 300px; height: 300px; background-color: #CEDF9F; top: 10%; right: 15%; }
-.bird { width: 120px; height: 120px; background-color: #CEDF9F; top: 15%; right: 38%; }
-.leaves { width: 150px; height: 150px; background-color: #CEDF9F; top: 5%; right: 3%; }
-.wind { width: 130px; height: 130px; background-color: #CEDF9F; top: 53%; right: 5%; }
-.fire-main { width: 250px; height: 250px; background-color: #F4B974; bottom: 5%; left: 3%; }
-.fire-small { width: 130px; height: 130px; background-color: #F4B974; bottom: 35%; left: 20%; }
-.rain { width: 280px; height: 280px; background-color: #B5D8C3; bottom: 15%; left: 32%; }
-.water { width: 180px; height: 180px; background-color: #B5D8C3; bottom: 8%; left: 53%; }
-.thunder { width: 110px; height: 110px; background-color: #B5D8C3; bottom: 2%; left: 25%; }
+.blink { animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: 0; } }
 
-/* Slider Control */
+/* Show Sidebar ONLY on wide screens */
+@media (min-width: 1200px) {
+    .retro-sidebar { display: flex; }
+}
+
+
+/* --- THE CONTAINER (The "Square Monitor" Simulation) --- */
+#retro-container {
+    width: 90%;
+    max-width: 1000px;
+}
+
+
+
+/* --- COLORS ---
+/* We keep your colors but make them darker/richer for the black BG */
+
+/* FIRE */
+.fire-master       { width: 230px; height: 230px; background-color: #b35900; bottom: 10%; left: 8%; }
+.fire-layer-flame  { width: 130px; height: 130px; background-color: #804000; bottom: 38%; left: 18%; }
+.fire-layer-wood   { width: 110px; height: 110px; background-color: #804000; bottom: 8%; left: 2%; }
+
+/* WATER */
+.water-master      { width: 270px; height: 270px; background-color: #004080; bottom: 20%; left: 40%; }
+.water-layer-rain  { width: 140px; height: 140px; background-color: #002b55; bottom: 50%; left: 35%; }
+.water-layer-thunder{ width: 120px; height: 120px; background-color: #002b55; bottom: 8%; left: 37%; }
+
+/* EARTH */
+.earth-master      { width: 280px; height: 280px; background-color: #2d5a1e; top: 10%; right: 10%; }
+.earth-layer-forest{ width: 150px; height: 150px; background-color: #1e3c14; top: 5%; right: 30%; }
+.earth-layer-bird  { width: 120px; height: 120px; background-color: #1e3c14; top: 5%; right: 3%; }
+.earth-layer-wind  { width: 130px; height: 130px; background-color: #1e3c14; top: 55%; right: 5%; } 
+
+/* --- SLIDER (Retro System Bar) --- */
 .master-control {
     position: absolute;
-    bottom: 0;
+    bottom: 30px;
     right: 40px;
     display: flex;
     align-items: center;
     gap: 15px;
-    font-weight: bold;
+    
+    /* Panel Look */
+    background: var(--bg);
+    border: 2px solid var(--text);
+    padding: 10px 15px;
+    box-shadow: 4px 4px 0 #000; /* Hard shadow */
+}
+
+#vol-icon {
     font-size: 1.5rem;
+    filter: grayscale(100%);
 }
 
 .slider-track {
     width: 200px;
-    height: 20px;
-    background-color: #E0E0E0;
-    border-radius: 10px;
+    height: 24px;
+    background-color: #000;
+    
+    /* Retro Bevel Effect */
+    border-top: 2px solid #555;
+    border-left: 2px solid #555;
+    border-bottom: 2px solid #fff;
+    border-right: 2px solid #fff;
+    
     position: relative;
-    overflow: hidden;
     cursor: pointer;
 }
 
+/* The Progress Bar (Digital blocks look) */
 .slider-fill {
-    width: 40%;
+    width: 50%; /* JS updates this */
     height: 100%;
-    background-color: #000;
-    border-radius: 10px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--text) 0px,
+        var(--text) 4px,
+        transparent 4px,
+        transparent 6px
+    ); /* Creates a 'loading bar' block effect */
 }
 
-/* Footer */
+/* --- FOOTER (Status Bar) --- */
 footer {
-    background-color: #000;
-    color: #fff;
-    padding: 1.5rem 4rem;
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    
+    /* Top Border only */
+    border-top: 1px solid var(--text);
+    
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem;
-    margin-top: 4rem;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .language-select {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     cursor: pointer;
+    border: 1px solid transparent;
+    padding: 4px;
+}
+.language-select:hover {
+    border: 1px solid var(--text);
+    background: #111;
 }
