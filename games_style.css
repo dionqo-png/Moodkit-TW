@@ -23,6 +23,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    font-family: "MS Sans Serif", "Tahoma", sans-serif;
 }
 
 #bar {
@@ -40,11 +41,13 @@ header {
 .logo-btn {
     background-color: #E0E0E0;
     color: #000;
-    padding: 8px 20px;
-    border-radius: 20px;
+    padding: 6px 12px;
+    border-radius: 0;
+    border: 1px solid #000;
+    box-shadow: inset -1px -1px 0 #7a7a7a, inset 1px 1px 0 #fff;
     text-decoration: none;
     font-weight: bold;
-    font-family: Arial, sans-serif;
+    font-family: "MS Sans Serif", "Tahoma", sans-serif;
     font-size: 0.9rem;
     display: flex;
     align-items: center;
@@ -54,7 +57,7 @@ header {
 .nav-links {
     display: flex;
     gap: 2rem;
-    font-family: Arial, sans-serif;
+    font-family: "MS Sans Serif", "Tahoma", sans-serif;
     font-weight: 600;
     font-size: 0.9rem;
 }
@@ -65,23 +68,26 @@ header {
 }
 
 .toggle-switch {
-    width: 50px;
-    height: 26px;
-    background-color: #E0E0E0;
-    border-radius: 13px;
+    width: 44px;
+    height: 20px;
+    background-color: #000;
+    border-radius: 0;
+    border: 1px solid #fff;
     position: relative;
     cursor: pointer;
     display: flex;
     align-items: center;
     padding: 2px;
+    box-shadow: inset -1px -1px 0 #333, inset 1px 1px 0 #777;
 }
 
 .toggle-knob {
-    width: 22px;
-    height: 22px;
-    background-color: #fff;
-    border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    width: 14px;
+    height: 14px;
+    background-color: #E0E0E0;
+    border-radius: 0;
+    border: 1px solid #000;
+    box-shadow: inset -1px -1px 0 #7a7a7a, inset 1px 1px 0 #fff;
 }
 
 #audio {

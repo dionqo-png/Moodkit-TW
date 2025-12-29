@@ -2,65 +2,94 @@
 let palette = [];
 let savedPalettes = [];
 let selectedIndex = -1;
+let selectedSavedIndex = -1;
 
 const NUM_CORES = 5;
+const STORAGE_KEY = "moodkit_saved_palettes";
 
 let msg = "";
 let msgTimer = 0;
 
-const paletteY = 50;
-const paletteH = 140;
+const paletteY = 30;
+let paletteH = 190;
 
-const gradientY = 220;
+let gradientY = 0;
 const gradientH = 60;
+const gradientGap = 12;
+const bottomMargin = 26;
+const minPaletteH = 140;
 
 let imgSource = null;
 let usingImagePalette = false;
 
-let fileInput;
+let savedListEl = null;
+let savedEmptyEl = null;
 
 // ---------- SETUP / DRAW ----------
 function setup() {
   // cria canvas e mete dentro da div #sketch-container
   const container = document.getElementById("sketch-container");
-  const cnv = createCanvas(900, 520); // <<-- antes era 480
+  const cnv = createCanvas(900, 520);
   if (container) cnv.parent("sketch-container");
 
   noStroke();
-  textFont("monospace");
+  textFont('"MS Sans Serif", "Tahoma", sans-serif');
   pixelDensity(1);
 
-  // input de imagem logo abaixo do canvas, dentro do mesmo container
-  fileInput = createFileInput(handleFile);
-  if (container) fileInput.parent("sketch-container");
-  fileInput.id("image-input");
-
-  fileInput.elt.style.marginTop = "10px";
-
+  setupUi();
+  carregarPaletasGuardadas();
   gerarPaleta();
+  updateSavedList();
 }
 
 function draw() {
-  background(10);
+  background(0);
 
+  updateLayout();
   desenharPainelFundo();
-  desenharTitulo();
   desenharPalette();
   desenharGradient();
-  desenharSavedPalettes();
   desenharMensagem();
+}
+
+// ---------- UI ----------
+function setupUi() {
+  const newBtn = document.getElementById("btn-new");
+  if (newBtn) newBtn.addEventListener("click", gerarPaleta);
+
+  const saveBtn = document.getElementById("btn-save");
+  if (saveBtn) saveBtn.addEventListener("click", guardarPaleta);
+
+  const fileInput = document.getElementById("image-input");
+  if (fileInput) fileInput.addEventListener("change", handleFileInput);
+
+  const clearBtn = document.getElementById("btn-clear-saved");
+  if (clearBtn) clearBtn.addEventListener("click", limparPaletasGuardadas);
+
+  savedListEl = document.getElementById("saved-list");
+  savedEmptyEl = document.getElementById("saved-empty");
+}
+
+function updateLayout() {
+  const desiredGradientY = height - gradientH - bottomMargin;
+  const desiredPaletteH = desiredGradientY - paletteY - gradientGap;
+
+  if (desiredPaletteH < minPaletteH) {
+    paletteH = minPaletteH;
+    gradientY = paletteY + paletteH + gradientGap;
+    return;
+  }
+
+  paletteH = desiredPaletteH;
+  gradientY = desiredGradientY;
 }
 
 // ---------- FUNDO / PAINEL PRINCIPAL ----------
 function desenharPainelFundo() {
-  noStroke();
-  fill(18, 18, 20, 220);
-  rect(10, 10, width - 20, height - 20, 16);
-
-  stroke(255, 60);
+  noFill();
+  stroke(255);
   strokeWeight(1);
-  line(24, 40, width - 24, 40);
-  noStroke();
+  rect(8, 8, width - 16, height - 16);
 }
 
 // ---------- GERAR PALETA RANDOM (3 ESTILOS) ----------
@@ -100,6 +129,8 @@ function gerarPaleta() {
   ajustarCorDoMeio();
 
   selectedIndex = -1;
+  selectedSavedIndex = -1;
+  updateSavedList();
   mostrarMensagem("Nova paleta random gerada");
 }
 
@@ -172,57 +203,85 @@ function gerarPaletaFromImage() {
   ajustarCorDoMeio();
 
   selectedIndex = -1;
+  selectedSavedIndex = -1;
+  updateSavedList();
   usingImagePalette = true;
   mostrarMensagem("Paleta gerada a partir da imagem");
 }
 
 // ---------- HANDLER DO UPLOAD ----------
-function handleFile(file) {
-  if (file.type === "image") {
-    loadImage(file.data, (img) => {
+function handleFileInput(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    mostrarMensagem("Ficheiro invalido.");
+    event.target.value = "";
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  loadImage(
+    url,
+    (img) => {
       imgSource = img;
       gerarPaletaFromImage();
-    });
-  } else {
-    mostrarMensagem("Por favor escolhe um ficheiro de imagem.");
-  }
+      URL.revokeObjectURL(url);
+    },
+    () => {
+      URL.revokeObjectURL(url);
+      mostrarMensagem("Nao foi possivel carregar a imagem.");
+    }
+  );
+  event.target.value = "";
 }
 
 // ---------- DESENHO DA PALETA PRINCIPAL ----------
 function desenharPalette() {
   if (!palette || palette.length === 0) return;
 
-  const colWidth = width / NUM_CORES;
+  const panelX = 12;
+  const panelY = paletteY - 6;
+  const panelW = width - 24;
+  const panelH = paletteH + 12;
+  const pad = 8;
+  const gap = 8;
+  const swatchW = (panelW - pad * 2 - gap * (NUM_CORES - 1)) / NUM_CORES;
+  const swatchH = panelH - pad * 2;
 
-  noStroke();
-  fill(0, 150);
-  rect(12, paletteY + 6, width - 24, paletteH + 10, 14);
+  stroke(255);
+  noFill();
+  rect(panelX, panelY, panelW, panelH);
 
   for (let i = 0; i < NUM_CORES; i++) {
     const hex = palette[i];
-    const x = i * colWidth;
-    const y = paletteY;
+    const x = panelX + pad + i * (swatchW + gap);
+    const y = panelY + pad;
 
-    noStroke();
+    stroke(255);
+    strokeWeight(1);
     fill(hex);
-    rect(x + 6, y, colWidth - 12, paletteH, 10);
+    rect(x, y, swatchW, swatchH);
 
     if (i === selectedIndex) {
       noFill();
       stroke(255);
-      strokeWeight(3);
-      rect(x + 6, y, colWidth - 12, paletteH, 10);
-      noStroke();
+      strokeWeight(2);
+      rect(x, y, swatchW, swatchH);
     }
 
-    fill(0, 160);
-    const labelY = y + paletteH - 24;
-    rect(x + 10, labelY, colWidth - 20, 18, 6);
+    stroke(255);
+    strokeWeight(1);
+    fill(0);
+    const labelH = 18;
+    const labelY = y + swatchH - labelH - 4;
+    rect(x + 6, labelY, swatchW - 12, labelH);
 
     fill(255);
+    noStroke();
     textAlign(CENTER, CENTER);
-    textSize(13);
-    text(hex.toUpperCase(), x + colWidth / 2, labelY + 9);
+    textSize(12);
+    text(hex.toUpperCase(), x + swatchW / 2, labelY + labelH / 2);
   }
 }
 
@@ -231,68 +290,41 @@ function desenharGradient() {
   if (!palette || palette.length === 0) return;
 
   const grad = chroma.scale(palette).mode("lab");
+  const panelX = 12;
+  const panelW = width - 24;
+  const pad = 8;
+
+  stroke(255);
+  noFill();
+  rect(panelX, gradientY - 4, panelW, gradientH + 8);
 
   noStroke();
-  fill(0, 140);
-  rect(18, gradientY - 8, width - 36, gradientH + 24, 12);
-
-  for (let x = 0; x < width - 40; x++) {
-    const t = x / (width - 40 - 1);
+  const gradW = panelW - pad * 2;
+  for (let x = 0; x < gradW; x++) {
+    const t = x / (gradW - 1);
     const c = grad(t).hex();
     fill(c);
-    rect(20 + x, gradientY, 1, gradientH, 4);
+    rect(panelX + pad + x, gradientY, 1, gradientH);
   }
-
-  fill(230);
-  textAlign(LEFT, CENTER);
-  textSize(12);
-  const txt = usingImagePalette
-    ? "Paleta gerada a partir da imagem (gradiente entre as cores)"
-    : "Paleta random gerada com chroma.js (gradiente suave entre as cores)";
-  text(txt, 24, gradientY - 14);
 }
 
 // ---------- GUARDAR PALETAS ----------
 function guardarPaleta() {
   if (!palette || palette.length === 0) return;
-  savedPalettes.push([...palette]);
-  mostrarMensagem("Paleta guardada (tecla S)");
+  savedPalettes.unshift([...palette]);
+  selectedSavedIndex = 0;
+  salvarPaletasGuardadas();
+  updateSavedList();
+  mostrarMensagem("Paleta guardada");
 }
 
-function desenharSavedPalettes() {
-  const startY = gradientY + gradientH + 30;
-  const lineH = 24;
-  const swatchSize = 16;
-
-  // painel para as paletas guardadas
-  noStroke();
-  fill(0, 120);
-  rect(18, startY - 22, width - 36, 170, 12);
-
-  if (savedPalettes.length === 0) {
-    fill(190);
-    textAlign(LEFT, TOP);
-    textSize(12);
-    text("Sem paletas guardadas (prime S para guardar)", 26, startY - 4);
-    return;
-  }
-
-  fill(220);
-  textAlign(LEFT, TOP);
-  textSize(12);
-  text("Paletas guardadas:", 26, startY - 4);
-
-  for (let i = 0; i < savedPalettes.length; i++) {
-    const pal = savedPalettes[i];
-    const y = startY + 4 + (i + 1) * lineH;
-
-    for (let j = 0; j < pal.length; j++) {
-      const x = 170 + j * (swatchSize + 6);
-      fill(pal[j]);
-      noStroke();
-      rect(x, y, swatchSize, swatchSize, 4);
-    }
-  }
+function limparPaletasGuardadas() {
+  if (savedPalettes.length === 0) return;
+  savedPalettes = [];
+  selectedSavedIndex = -1;
+  salvarPaletasGuardadas();
+  updateSavedList();
+  mostrarMensagem("Paletas limpas");
 }
 
 // ---------- INTERAÇÃO ----------
@@ -325,6 +357,74 @@ function keyPressed() {
   } else if (key === "s" || key === "S") {
     guardarPaleta();
   }
+}
+
+function carregarPaleta(index) {
+  const pal = savedPalettes[index];
+  if (!pal) return;
+  palette = [...pal];
+  selectedIndex = -1;
+  selectedSavedIndex = index;
+  usingImagePalette = false;
+  updateSavedList();
+  mostrarMensagem("Paleta carregada");
+}
+
+function carregarPaletasGuardadas() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data)) return;
+    savedPalettes = data.filter(
+      (pal) => Array.isArray(pal) && pal.length === NUM_CORES
+    );
+  } catch (err) {
+    console.warn("Erro ao ler paletas guardadas:", err);
+  }
+}
+
+function salvarPaletasGuardadas() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPalettes));
+  } catch (err) {
+    console.warn("Erro ao guardar paletas:", err);
+  }
+}
+
+function updateSavedList() {
+  if (!savedListEl) return;
+  savedListEl.innerHTML = "";
+
+  if (savedEmptyEl) {
+    savedEmptyEl.hidden = savedPalettes.length > 0;
+  }
+
+  savedPalettes.forEach((pal, index) => {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className =
+      "saved-item" + (index === selectedSavedIndex ? " is-active" : "");
+    item.setAttribute("aria-label", "Paleta " + (index + 1));
+    item.addEventListener("click", () => carregarPaleta(index));
+
+    const label = document.createElement("span");
+    label.className = "saved-index";
+    label.textContent = "P" + (index + 1);
+
+    const swatches = document.createElement("span");
+    swatches.className = "saved-swatches";
+    pal.forEach((hex) => {
+      const swatch = document.createElement("span");
+      swatch.className = "saved-swatch";
+      swatch.style.background = hex;
+      swatches.appendChild(swatch);
+    });
+
+    item.appendChild(label);
+    item.appendChild(swatches);
+    savedListEl.appendChild(item);
+  });
 }
 
 // ---------- UI ----------
@@ -364,17 +464,18 @@ function desenharMensagem() {
   const boxWidth = 360;
   const boxHeight = 28;
 
-  fill(0, 190);
-  noStroke();
+  fill(0);
+  stroke(255);
   rect(
     width / 2 - boxWidth / 2,
     height - 90,           // <<-- subido (antes -70)
     boxWidth,
     boxHeight,
-    10
+    2
   );
 
   fill(255);
+  noStroke();
   textAlign(CENTER, CENTER);
   textSize(12);
   text(msg, width / 2, height - 90 + boxHeight / 2);
