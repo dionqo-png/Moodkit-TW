@@ -132,6 +132,7 @@ function gerarPaleta() {
   selectedSavedIndex = -1;
   updateSavedList();
   mostrarMensagem("Nova paleta random gerada");
+  if (window.updateParticleColors) window.updateParticleColors(palette);
 }
 
 // ---------- AJUSTAR A COR DO MEIO ----------
@@ -168,45 +169,55 @@ function ajustarCorDoMeio() {
 // ---------- GERAR PALETA A PARTIR DE IMAGEM ----------
 function gerarPaletaFromImage() {
   if (!imgSource) return;
+  const size = 80, gfx = createGraphics(size, size);
+  gfx.image(imgSource, 0, 0, size, size); gfx.loadPixels();
 
-  const w = 80;
-  const h = 80;
-  const gfx = createGraphics(w, h);
-  gfx.image(imgSource, 0, 0, w, h);
-  gfx.loadPixels();
+  // 1. Dataset Extraction
+  const data = [];
+  for (let i = 0; i < gfx.pixels.length; i += 4) 
+    data.push([gfx.pixels[i], gfx.pixels[i+1], gfx.pixels[i+2]]);
 
-  const samples = [];
-  const sampleCount = 300;
+  // 2. K-Means (Inline & Optimized)
+  let seed = 42, k = 5, iter = 20, centroids = [];
+  const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  
+  // Init
+  for (let i = 0; i < k; i++) centroids.push(data[Math.floor(rnd() * data.length)]);
 
-  for (let i = 0; i < sampleCount; i++) {
-    const x = floor(random(w));
-    const y = floor(random(h));
-    const idx = 4 * (y * w + x);
-    const r = gfx.pixels[idx];
-    const g = gfx.pixels[idx + 1];
-    const b = gfx.pixels[idx + 2];
-    samples.push(chroma(r, g, b));
+  // Convergence Loop
+  while (iter--) {
+    const clusters = Array.from({ length: k }, () => []);
+    data.forEach(p => {
+      let min = Infinity, idx = 0;
+      centroids.forEach((c, i) => {
+        const d = (p[0]-c[0])**2 + (p[1]-c[1])**2 + (p[2]-c[2])**2;
+        if (d < min) { min = d; idx = i; }
+      });
+      clusters[idx].push(p);
+    });
+
+    let converged = true;
+    centroids = centroids.map((c, i) => {
+      const cl = clusters[i];
+      if (!cl.length) return data[Math.floor(rnd() * data.length)];
+      const newC = [0, 1, 2].map(x => Math.floor(cl.reduce((acc, p) => acc + p[x], 0) / cl.length));
+      if (newC.some((v, j) => v !== c[j])) converged = false;
+      return newC;
+    });
+    if (converged) break;
   }
 
-  const anchors = [];
-  const numAnchors = 3 + floor(random(3));
-
-  for (let i = 0; i < numAnchors; i++) {
-    const c = random(samples);
-    anchors.push(c);
-  }
-
-  const hexAnchors = anchors.map((c) => c.hex());
-
-  palette = chroma.scale(hexAnchors).mode("lab").colors(NUM_CORES);
-
-  ajustarCorDoMeio();
-
-  selectedIndex = -1;
-  selectedSavedIndex = -1;
-  updateSavedList();
+  // 3. Output & UI
+  const hex = centroids.map(c => chroma(c).hex()).sort((a,b) => chroma(a).get('lab.l') - chroma(b).get('lab.l'));
+  palette = chroma.scale(hex).mode("lab").colors(NUM_CORES);
+  
+  gfx.remove();
+  typeof ajustarCorDoMeio === 'function' && ajustarCorDoMeio();
+  selectedIndex = selectedSavedIndex = -1;
+  typeof updateSavedList === 'function' && updateSavedList();
   usingImagePalette = true;
-  mostrarMensagem("Paleta gerada a partir da imagem");
+  typeof mostrarMensagem === 'function' && mostrarMensagem("Paleta Dominante Gerada");
+  if (window.updateParticleColors) window.updateParticleColors(palette);
 }
 
 // ---------- HANDLER DO UPLOAD ----------
@@ -368,6 +379,7 @@ function carregarPaleta(index) {
   usingImagePalette = false;
   updateSavedList();
   mostrarMensagem("Paleta carregada");
+  if (window.updateParticleColors) window.updateParticleColors(palette);
 }
 
 function carregarPaletasGuardadas() {

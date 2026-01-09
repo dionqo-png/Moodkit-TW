@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <link rel="icon" href="/imgs/favicon.png" />
   <link rel="stylesheet" href="palette_style.css">
   <script src="global.js" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Color Palette</title>
+  <title>MoodKit</title>
 
-  <!-- p5.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
-  <!-- chroma.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
-  <!-- O TEU JS -->
+  
   <script src="colorpalette.js" defer></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="particles.js"></script>
 </head>
+
 <body>
   <div class="topbar" role="banner">
     <div class="brand">
@@ -46,5 +56,9 @@
       </div>
     </aside>
   </div>
+
+  <section id="particle-section"></section>
+  
 </body>
+
 </html>
