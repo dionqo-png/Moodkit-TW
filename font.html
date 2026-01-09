@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/imgs/favicon.png" />
     <link rel="stylesheet" href="font_style.css">
+    
     <script src="global.js" defer></script>
+    
+    <script src="font_engine.js" defer></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoodKit</title>
+    <title>MoodKit - Font Pairings</title>
 </head>
-
 <body>
 
-    <header>
-        <div class="header-left">
-            <a class="logo-btn" href="index.html">LOGO</a>
-            <div id="bar"></div>
-            <nav class="nav-links">
-                <a href="home.html">Home</a>
-                <a href="sound.html">Sound Settings</a>
-            </nav>
-        </div>
-
-        <div class="toggle-switch">
-            <div class="toggle-knob"></div>
-            <span id="audio">🔊</span>
-        </div>
-    </header>
-
     <div id="main">
-        
+        <div class="font-tool-container">
+            
+            <div class="controls-panel">
+                <div class="control-group">
+                    <label>PROJECT VIBE</label>
+                    <select id="vibe-select">
+                        <option value="modern">Modern / Clean</option>
+                        <option value="minimalist">Minimalist / Airy</option> <option value="retro">Retro / 80s</option>
+                        <option value="elegant">Elegant / Luxury</option>
+                        <option value="editorial">Editorial / Print</option> <option value="tech">Tech / Cyber</option>
+                        <option value="playful">Playful / Fun</option>
+                        <option value="brutalist">Brutalist / Raw</option>
+                    </select>
+                </div>
+
+                <div class="control-group grow">
+                    <label>PREVIEW TEXT</label>
+                    <input type="text" id="text-input" value="The quick brown fox jumps over the lazy dog." placeholder="Type something...">
+                </div>
+            </div>
+
+            <div id="font-grid" class="font-grid">
+                </div>
+
+        </div>
     </div>
 
-    <footer>
-        <div class="language-select">
-            <span>🌐</span> English <img src="imgs/down.png">
-        </div>
-        <div class="copyright">
-            Copyright © 2025. All rights reserved.
-        </div>
-    </footer>
-
 </body>
-
 </html>

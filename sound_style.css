@@ -176,31 +176,3 @@ body {
         transparent 6px
     ); /* Creates a 'loading bar' block effect */
 }
-
-/* --- FOOTER (Status Bar) --- */
-footer {
-    background-color: var(--bg);
-    color: var(--text);
-    padding: 10px 20px;
-    font-size: 0.8rem;
-    
-    /* Top Border only */
-    border-top: 1px solid var(--text);
-    
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: 'Courier New', monospace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.language-select {
-    cursor: pointer;
-    border: 1px solid transparent;
-    padding: 4px;
-}
-.language-select:hover {
-    border: 1px solid var(--text);
-    background: #111;
-}

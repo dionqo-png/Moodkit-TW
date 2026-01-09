@@ -1,21 +1,29 @@
-<header>
+<header class="global-header">
     <div class="header-left">
-        <a class="logo-btn" href="index.html">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                <circle cx="12" cy="12" r="10"></circle>
-            </svg>
-            MOODKIT
+        <a class="logo-btn" href="home.html">
+            <span style="font-size: 1.2rem;">⚪</span> MOODKIT
         </a>
-        <div id="bar"></div>
+        
+        <div class="divider-vertical"></div>
+        
         <nav class="nav-links">
-            <a href="home.html">Home</a>
-            <a href="palette.html">Palette</a>
-            <a href="sound.html">Sound Settings</a>
+            <a href="home.html" class="nav-primary">HOME</a>
+            <a href="palette.html" class="nav-primary">PALETTE</a>
+            <a href="sound.html" class="nav-primary">SOUND</a>
+            
+            <div class="divider-vertical small"></div>
+            
+            <div class="nav-group-secondary">
+                <a href="games.html">Games</a>
+                <a href="font.html">Font</a>
+                <a href="brief.html">Brief</a>
+                <a href="filters.html">Filters</a>
+            </div>
         </nav>
     </div>
 
     <div class="audio-control">
-        <label class="switch">
+        <label class="switch" for="audio-toggle-checkbox">
             <input type="checkbox" id="audio-toggle-checkbox">
             <span class="slider"></span>
         </label>

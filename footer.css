@@ -1,0 +1,29 @@
+.global-footer {
+    width: 100%;
+    background-color: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 1.5rem 2rem;
+    margin-top: auto; /* Pushes footer to bottom if page is short */
+    position: relative;
+    z-index: 10;
+}
+
+.footer-content {
+    max-width: 1360px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #888;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.language-select {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.language-select:hover { color: #fff; }

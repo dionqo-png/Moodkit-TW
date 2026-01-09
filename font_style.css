@@ -1,127 +1,132 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+:root {
+    --bg: #000;
+    --text: #fff;
+    --border: #fff;
+    --panel: #0a0a0a;
+    --accent: #7affc7; 
 }
 
 body {
-    background-color: #C9E1C2;
+    background-color: var(--bg);
+    color: var(--text);
     font-family: 'Courier New', Courier, monospace;
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
+}
+
+#main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.font-tool-container {
+    width: 90%;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    color: #000;
-}
-
-/* Header */
-header {
-    background-color: #000;
-    color: #fff;
-    padding: 1rem 4rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: "MS Sans Serif", "Tahoma", sans-serif;
-}
-
-#bar {
-    width: 1px;
-    height: 20px;
-    background: #555;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
     gap: 2rem;
 }
 
-.logo-btn {
-    background-color: #E0E0E0;
-    color: #000;
-    padding: 6px 12px;
-    border-radius: 0;
-    border: 1px solid #000;
-    box-shadow: inset -1px -1px 0 #7a7a7a, inset 1px 1px 0 #fff;
-    text-decoration: none;
-    font-weight: bold;
-    font-family: "MS Sans Serif", "Tahoma", sans-serif;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.nav-links {
+/* --- CONTROLS PANEL --- */
+.controls-panel {
     display: flex;
     gap: 2rem;
-    font-family: "MS Sans Serif", "Tahoma", sans-serif;
-    font-weight: 600;
-    font-size: 0.9rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    box-shadow: 4px 4px 0 rgba(255,255,255,0.2);
+    align-items: flex-end;
+    flex-wrap: wrap;
 }
 
-.nav-links a {
-    color: #fff;
-    text-decoration: none;
-}
-
-.toggle-switch {
-    width: 44px;
-    height: 20px;
-    background-color: #000;
-    border-radius: 0;
-    border: 1px solid #fff;
-    position: relative;
-    cursor: pointer;
+.control-group {
     display: flex;
-    align-items: center;
-    padding: 2px;
-    box-shadow: inset -1px -1px 0 #333, inset 1px 1px 0 #777;
-}
-
-.toggle-knob {
-    width: 14px;
-    height: 14px;
-    background-color: #E0E0E0;
-    border-radius: 0;
-    border: 1px solid #000;
-    box-shadow: inset -1px -1px 0 #7a7a7a, inset 1px 1px 0 #fff;
-}
-
-#audio {
-    position: absolute;
-    right: 6px;
-    font-size: 10px;
-    color: #555;
-}
-
-/* Main */
-#main {
-    height: 100vh;
-}
-
-/* Footer */
-footer {
-    background-color: #000;
-    color: #fff;
-    padding: 1.5rem 4rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.8rem;
-    margin-top: 4rem;
-}
-
-footer img {
-    width: 1em;
-    height: 1em;
-}
-
-.language-select {
-    display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 0.5rem;
-    cursor: pointer;
+}
+
+.control-group.grow {
+    flex: 1;
+    min-width: 200px;
+}
+
+label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    letter-spacing: 1px;
+}
+
+select, input {
+    background: #000;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 10px 15px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    width: 100%;
+}
+
+select:focus, input:focus {
+    border-color: var(--accent);
+}
+
+/* --- GRID --- */
+.font-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive 2-column feel */
+    gap: 1.5rem;
+}
+
+/* --- FONT CARD --- */
+.font-card {
+    border: 1px solid #333;
+    background: #050505;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.font-card:hover {
+    border-color: var(--text);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #333;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.font-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Dynamic Classes applied by JS */
+.preview-heading {
+    font-size: 2rem;
+    line-height: 1.2;
+}
+
+.preview-body {
+    font-size: 1rem;
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+
+.font-loading {
+    opacity: 0.5;
+    filter: blur(2px);
 }

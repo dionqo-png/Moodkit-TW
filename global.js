@@ -1,32 +1,45 @@
 /* global.js */
 
 /* ===============================
-   HEADER INJECTION
+   1. INJECT STYLES
    =============================== */
+const headerCss = document.createElement("link");
+headerCss.rel = "stylesheet";
+headerCss.href = "header.css"; 
+document.head.appendChild(headerCss);
 
-// Inject CSS
-const cssLink = document.createElement("link");
-cssLink.rel = "stylesheet";
-cssLink.href = "header.css"; 
-document.head.appendChild(cssLink);
+const footerCss = document.createElement("link");
+footerCss.rel = "stylesheet";
+footerCss.href = "footer.css"; 
+document.head.appendChild(footerCss);
 
+/* ===============================
+   2. INITIALIZE ON LOAD
+   =============================== */
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Initialize SoundManager immediately (so it's ready)
+    
+    // A. Start Sound Engine Immediately (Loads memory)
     SoundManager.init();
 
-    // 2. Load Header
+    // B. Load Header & Footer
     fetch('header.html')
         .then(r => r.text())
         .then(data => {
             document.body.insertAdjacentHTML('afterbegin', data);
             highlightCurrentPage();
-            setupGlobalAudioToggle();
+            setupGlobalAudioToggle(); // Connect the mute button
+        });
+
+    fetch('footer.html')
+        .then(r => r.text())
+        .then(data => {
+            document.body.insertAdjacentHTML('beforeend', data);
         });
 });
 
 function highlightCurrentPage() {
     let currentPath = window.location.pathname.split("/").pop();
-    if (currentPath === "") currentPath = "home.html"; 
+    if (currentPath === "" || currentPath === "index.html") currentPath = "home.html"; 
     const links = document.querySelectorAll('.nav-links a');
     links.forEach(link => {
         if (link.getAttribute('href') === currentPath) {
@@ -36,26 +49,25 @@ function highlightCurrentPage() {
 }
 
 /* ===============================
-   GLOBAL AUDIO TOGGLE (HEADER)
+   3. MUTE TOGGLE LOGIC
    =============================== */
-
 function setupGlobalAudioToggle() {
-    // Use a short timeout to ensure the DOM elements are painted
+    // Small delay to ensure HTML is painted
     setTimeout(() => {
         const checkbox = document.getElementById("audio-toggle-checkbox");
         const icon = document.querySelector(".audio-control .icon");
 
         if (!checkbox) return;
 
-        // Sync visual state with SoundManager
+        // Sync visual state with Engine
         checkbox.checked = !SoundManager.globalMute;
         updateMuteIcon(SoundManager.globalMute, icon);
 
+        // Click Listener
         checkbox.addEventListener("change", e => {
             const isSoundOn = e.target.checked;
             const shouldMute = !isSoundOn;
             
-            // Tell SoundManager to handle the muting
             SoundManager.setGlobalMute(shouldMute);
             updateMuteIcon(shouldMute, icon);
         });
@@ -69,16 +81,16 @@ function updateMuteIcon(isMuted, iconElement) {
 }
 
 /* =========================================
-   SOUND MANAGER (With Memory)
+   4. SOUND MANAGER ENGINE
    ========================================= */
-
 const SoundManager = {
     ctx: null,
     globalMute: false,
     activeProfile: null,
     currentSelection: null,
+    initialized: false,
 
-    // YOUR EXACT PATHS FROM THE PROMPT
+    // DATA (Your Paths)
     profiles: {
         fire: {
             masterVol: 0.5,
@@ -108,54 +120,61 @@ const SoundManager = {
     },
 
     init() {
+        if (this.initialized) return;
         console.log("🔊 SoundManager Initialized");
 
         // 1. Load Mute State
         this.globalMute = localStorage.getItem("moodkit_mute") === "true";
 
-        // 2. Load Active Sounds (Memory)
+        // 2. Load Memory (Profile + Active Sounds)
         const savedProfile = localStorage.getItem("moodkit_profile");
         const savedFeatures = JSON.parse(localStorage.getItem("moodkit_features") || "[]");
 
-        // 3. Auto-Resume (The Fix for "Sound Stops")
         if (savedProfile && this.profiles[savedProfile]) {
-            // We need a user interaction to start audio context usually,
-            // so we set up the state, and the first click anywhere will start it.
             this.activeProfile = savedProfile;
             this.currentSelection = { type: "master", profile: savedProfile };
             
-            // Mark features as active in data
+            // Mark sounds as active in data
             savedFeatures.forEach(key => {
                 if (this.profiles[savedProfile].sounds[key]) {
                     this.profiles[savedProfile].sounds[key].active = true;
                 }
             });
 
-            // Try to auto-play immediately
+            // Attempt to play immediately (might get blocked)
             this.setupContext();
             this.restorePlayback();
         }
 
-        // 4. Global Unlock (for browser policy)
-        document.addEventListener('click', () => {
+        // 3. THE FAILSAFE (Crucial for Persistence)
+        // If browser blocked audio on page load, this unmutes it on the first click.
+        const unlockAudio = () => {
             if (!this.ctx) this.setupContext();
-            if (this.ctx && this.ctx.state === 'suspended' && !this.globalMute) {
+            if (this.ctx && this.ctx.state === 'suspended') {
                 this.ctx.resume();
             }
-        }, { once: true });
+            // Retry playing sounds
+            this.restorePlayback(); 
+        };
+
+        // Listen for ANY interaction to unlock sound
+        document.addEventListener('click', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        this.initialized = true;
     },
 
     restorePlayback() {
-        if (!this.activeProfile) return;
+        if (!this.activeProfile || this.globalMute) return;
         
-        // 1. Restore Master Vol
         const p = this.profiles[this.activeProfile];
+        
+        // Restore Master Volume
         if (p.gainNode) {
-            // Apply volume immediately
-            p.gainNode.gain.value = this.globalMute ? 0 : p.masterVol;
+            p.gainNode.gain.value = p.masterVol;
         }
 
-        // 2. Play Active Sounds
+        // Restore Individual Sounds
         Object.keys(p.sounds).forEach(key => {
             if (p.sounds[key].active) {
                 this.playFeature(this.activeProfile, key);
@@ -163,83 +182,33 @@ const SoundManager = {
         });
     },
 
-    /* ===== STATE SAVING ===== */
-    saveState() {
-        // Save Profile
-        if (this.activeProfile) {
-            localStorage.setItem("moodkit_profile", this.activeProfile);
-        }
-        
-        // Save Active Features
-        const activeFeats = [];
-        if (this.activeProfile) {
-            const p = this.profiles[this.activeProfile];
-            Object.keys(p.sounds).forEach(key => {
-                if (p.sounds[key].active) activeFeats.push(key);
-            });
-        }
-        localStorage.setItem("moodkit_features", JSON.stringify(activeFeats));
-    },
-
-    /* ===== MUTE LOGIC ===== */
-
-    setGlobalMute(shouldMute) {
-        this.globalMute = shouldMute;
-        localStorage.setItem("moodkit_mute", shouldMute);
-        this.applyGlobalMute();
-    },
-
-    applyGlobalMute() {
-        if (!this.ctx) return;
-
-        Object.values(this.profiles).forEach(profile => {
-            if (!profile.gainNode) return;
-            
-            // Soft mute using Gain (Safer than suspending context)
-            const targetVol = this.globalMute ? 0 : profile.masterVol;
-            profile.gainNode.gain.cancelScheduledValues(this.ctx.currentTime);
-            profile.gainNode.gain.setTargetAtTime(targetVol, this.ctx.currentTime, 0.1);
-        });
-    },
-
-    setupContext() {
-        if (!this.ctx) {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            this.ctx = new AudioContext();
-
-            Object.values(this.profiles).forEach(profile => {
-                profile.gainNode = this.ctx.createGain();
-                profile.gainNode.gain.value = profile.masterVol;
-                profile.gainNode.connect(this.ctx.destination);
-            });
-            
-            this.applyGlobalMute();
-        }
-        return this.ctx;
-    },
-
     /* ===== ACTIONS ===== */
 
     activateProfile(profileName) {
         if (!this.setupContext()) return;
 
-        // Stop others
+        // 1. Stop other profiles
         Object.keys(this.profiles).forEach(p => {
             if (p !== profileName) this.stopProfile(p);
         });
 
         this.activeProfile = profileName;
+        const p = this.profiles[profileName];
+
+        // 2. ACTIVATE ALL SOUNDS (This makes the Big Bubble auto-play everything)
+        Object.keys(p.sounds).forEach(key => {
+            const sound = p.sounds[key];
+            sound.active = true; 
+            this.playFeature(profileName, key);
+        });
+
+        // 3. Selection & Save
         this.currentSelection = { type: "master", profile: profileName };
-        
-        // Auto-start first sound if nothing else is active? 
-        // Or just let user click features. 
-        // Based on previous code, let's just activate.
-        
         this.saveState();
+        
+        // 4. Update UI
         window.dispatchEvent(new CustomEvent("profile-changed"));
-        window.dispatchEvent(
-            new CustomEvent("volume-updated", { detail: this.profiles[profileName].masterVol })
-        );
+        window.dispatchEvent(new CustomEvent("volume-updated", { detail: p.masterVol }));
     },
 
     toggleFeature(profileName, featureKey) {
@@ -257,8 +226,56 @@ const SoundManager = {
             : this.stopFeature(profileName, featureKey);
 
         this.currentSelection = { type: "feature", profile: profileName, key: featureKey };
-        
         this.saveState();
+    },
+
+    setGlobalMute(shouldMute) {
+        this.globalMute = shouldMute;
+        localStorage.setItem("moodkit_mute", shouldMute);
+        this.applyGlobalMute();
+    },
+
+    applyGlobalMute() {
+        if (!this.ctx) return;
+
+        Object.values(this.profiles).forEach(profile => {
+            if (!profile.gainNode) return;
+            const targetVol = this.globalMute ? 0 : profile.masterVol;
+            profile.gainNode.gain.cancelScheduledValues(this.ctx.currentTime);
+            profile.gainNode.gain.setTargetAtTime(targetVol, this.ctx.currentTime, 0.1);
+        });
+    },
+
+    /* ===== INTERNAL HELPERS ===== */
+
+    setupContext() {
+        if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContext();
+
+            Object.values(this.profiles).forEach(profile => {
+                profile.gainNode = this.ctx.createGain();
+                profile.gainNode.gain.value = profile.masterVol;
+                profile.gainNode.connect(this.ctx.destination);
+            });
+            this.applyGlobalMute();
+        }
+        return this.ctx;
+    },
+
+    saveState() {
+        if (this.activeProfile) {
+            localStorage.setItem("moodkit_profile", this.activeProfile);
+        }
+        
+        const activeFeats = [];
+        if (this.activeProfile) {
+            const p = this.profiles[this.activeProfile];
+            Object.keys(p.sounds).forEach(key => {
+                if (p.sounds[key].active) activeFeats.push(key);
+            });
+        }
+        localStorage.setItem("moodkit_features", JSON.stringify(activeFeats));
     },
 
     stopProfile(profileName) {
@@ -302,12 +319,12 @@ const SoundManager = {
             s.el = new Audio(s.src);
             s.el.loop = true;
             s.el.volume = s.vol;
-            // Web Audio Hookup
             s.source = this.ctx.createMediaElementSource(s.el);
             s.source.connect(p.gainNode);
         }
         
-        // Important: catch autoplay errors without crashing
-        s.el.play().catch(err => console.log("Waiting for interaction:", err));
+        // This catch block handles the autoplay policy silently
+        // The 'document.click' listener in init() will fix it automatically.
+        s.el.play().catch(err => console.log("Waiting for user interaction..."));
     }
 };

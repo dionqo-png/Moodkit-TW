@@ -1,17 +1,29 @@
-/* header.css */
-
-/* HEADER CONTAINER */
+/* HEADER CONTAINER - Match home page style */
 header {
-    background-color: #000 !important; /* Forces black background */
-    color: #fff !important;
-    padding: 1rem 4rem;
+    background-color: var(--color-bg, #000) !important;
+    color: var(--color-text, #fff) !important;
+    padding: var(--space-8, 8px) var(--space-16, 16px);
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    z-index: 9999;
-    font-family: "MS Sans Serif", "Tahoma", sans-serif;
-    border-bottom: 1px solid #fff;
+    z-index: 10000; /* Higher than home page layers */
+    font-family: "Segoe UI", "MS Sans Serif", Tahoma, sans-serif;
+    border-bottom: 1px solid var(--color-border, #fff);
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Ensure header stays above home page effects */
+body.home header {
+    position: relative;
+    z-index: 10000;
+    background: var(--color-panel, #0A0A0A) !important;
+    border: 1px solid var(--color-border, #fff);
+    box-shadow: var(--bevel, inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.15));
+    margin: var(--space-24, 24px);
+    margin-bottom: 0;
+    width: calc(100% - (var(--space-24, 24px) * 2));
 }
 
 /* NAVIGATION */
@@ -24,57 +36,47 @@ header {
 #bar {
     width: 1px;
     height: 20px;
-    background: #555;
+    background: var(--color-dim, #666);
 }
 
 .logo-btn {
-    background-color: #E0E0E0;
-    color: #000;
+    background-color: var(--color-bg, #000);
+    color: var(--color-text, #fff);
     padding: 6px 12px;
     border-radius: 0;
-    border: 1px solid #000;
-    box-shadow: inset -1px -1px 0 #7a7a7a, inset 1px 1px 0 #fff;
+    border: 1px solid var(--color-border, #fff);
+    box-shadow: var(--bevel, inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.15));
     text-decoration: none;
     font-weight: bold;
-    font-family: "MS Sans Serif", "Tahoma", sans-serif;
+    font-family: "Segoe UI", "MS Sans Serif", Tahoma, sans-serif;
     font-size: 0.9rem;
     display: flex;
     align-items: center;
     gap: 8px;
     text-transform: uppercase;
+    transition: all 0.2s ease;
 }
 
-.nav-links {
-    display: flex;
-    gap: 2rem;
-    font-family: "MS Sans Serif", "Tahoma", sans-serif;
-    font-weight: 600;
-    font-size: 0.9rem;
+.logo-btn:hover {
+    background-color: var(--color-text, #fff);
+    color: var(--color-bg, #000);
 }
 
-.nav-links a {
-    color: #fff;
-    text-decoration: none;
-    opacity: 0.6;
-    transition: opacity 0.3s;
+.logo-btn svg {
+    stroke: var(--color-text, #fff);
+    transition: stroke 0.2s ease;
 }
 
-.nav-links a:hover {
-    opacity: 1;
+.logo-btn:hover svg {
+    stroke: var(--color-bg, #000);
 }
 
-/* HIGHLIGHTING CLASS (Added this) */
-.nav-links a.active-link {
-    opacity: 1;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-}
 
-/* TOGGLE SWITCH */
+/* TOGGLE SWITCH - Match home page controls */
 .audio-control {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
 }
 
 .switch {
@@ -97,42 +99,166 @@ header {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #000;
+    background-color: var(--color-bg, #000);
     transition: .4s;
     border-radius: 0;
-    border: 1px solid #fff;
-    box-shadow: inset -1px -1px 0 #333, inset 1px 1px 0 #777;
+    border: 1px solid var(--color-border, #fff);
+    box-shadow: var(--bevel, inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.15));
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 14px;
-    width: 14px;
-    left: 2px;
-    bottom: 2px;
-    background-color: #E0E0E0;
+    height: 12px;
+    width: 12px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--color-text, #fff);
     transition: .4s;
     border-radius: 0;
-    border: 1px solid #000;
-    box-shadow: inset -1px -1px 0 #7a7a7a, inset 1px 1px 0 #fff;
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.5);
 }
 
 input:checked + .slider {
-    background-color: #000;
+    background-color: var(--accent-2, #63b7ff);
 }
 
 input:checked + .slider:before {
     transform: translateX(22px);
-    background-color: #fff;
+    background-color: var(--color-text, #fff);
 }
 
 .switch input:focus-visible + .slider {
-    outline: 2px solid #fff;
-    outline-offset: 1px;
+    outline: 1px dotted var(--color-text);
+    outline-offset: 2px;
 }
 
 .icon {
-    font-size: 14px;
+    font-size: 16px;
+    color: var(--color-text, #fff);
+    min-width: 20px;
+    text-align: center;
+}
+
+/* Add home page variables to non-home pages */
+body:not(.home) {
+    --color-bg: #000;
+    --color-panel: #0A0A0A;
+    --color-text: #FFFFFF;
+    --color-muted: #E6E6E6;
+    --color-dim: #666666;
+    --color-border: #FFFFFF;
+    --accent: #7affc7;
+    --accent-2: #63b7ff;
+    --accent-3: #ff5a99;
+    --space-8: 8px;
+    --space-16: 16px;
+    --space-24: 24px;
+    --bevel: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.15);
+    font-family: "Segoe UI", "MS Sans Serif", Tahoma, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* Ensure proper spacing on non-home pages */
+body:not(.home) > header:first-child {
+    margin-bottom: var(--space-24, 24px);
+}
+
+/* Sound page specific adjustments */
+body:not(.home) #main {
+    padding: var(--space-24, 24px);
+}
+
+
+
+/* DIVIDERS */
+.divider-vertical {
+    width: 1px;
+    height: 24px;
+    background: #444;
+}
+.divider-vertical.small {
+    height: 16px;
+    background: #333;
+    margin: 0 0.5rem;
+}
+
+/* NAVIGATION LINKS */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 100%;
+}
+
+.nav-links a {
     color: #fff;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    border-bottom: 2px solid transparent;
+    position: relative;
+    padding: 4px 0;
+}
+
+.nav-links a:hover {
+    opacity: 1;
+}
+
+/* HIGHLIGHTING CLASS */
+.nav-links a.active-link {
+    opacity: 1;
+    font-weight: 700;
+}
+
+.nav-links a.active-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--accent, #7affc7);
+    box-shadow: 0 0 4px var(--accent, #7affc7);
+}
+
+/* Primary Links (Home, Palette, Sound) */
+.nav-primary {
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+}
+
+/* Secondary Links (Tools) */
+.nav-group-secondary {
+    display: flex;
+    gap: 1rem;
+}
+.nav-group-secondary a {
+    font-size: 0.85rem;
+    font-weight: 400;
+    opacity: 0.5;
+}
+
+/* Hover & Active States */
+.nav-links a:hover { opacity: 1; }
+.nav-links a.active-link {
+    opacity: 1;
+    border-bottom: 2px solid #fff; /* Underline indicator */
+}
+
+
+
+/* RESPONSIVE HIDING (For smaller screens) */
+@media (max-width: 900px) {
+    .nav-group-secondary { display: none; } /* Hide tools on tablets */
+}
+@media (max-width: 600px) {
+    .nav-links { display: none; } /* Hide all text links on mobile, keep logo/sound */
 }

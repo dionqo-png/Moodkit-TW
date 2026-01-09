@@ -1,562 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/imgs/favicon.png" />
+    <link rel="stylesheet" href="home_style.css">
     <script src="global.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoodKit</title>
-    <style>
-        .home {
-            --color-bg: #000;
-            --color-panel: #0A0A0A;
-            --color-text: #FFFFFF;
-            --color-muted: #E6E6E6;
-            --color-soft: #BDBDBD;
-            --color-dim: #666666;
-            --color-border: #FFFFFF;
-            --accent: #7affc7;
-            --accent-2: #63b7ff;
-            --accent-3: #ff5a99;
-            --glow-1: rgba(122, 255, 199, 0.18);
-            --glow-2: rgba(99, 183, 255, 0.16);
-            --glow-opacity: 0.5;
-            --grain-color: rgba(255, 255, 255, 0.55);
-            --space-4: 4px;
-            --space-8: 8px;
-            --space-12: 12px;
-            --space-16: 16px;
-            --space-24: 24px;
-            --space-32: 32px;
-            --bevel: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.15);
-            font-family: "Segoe UI", "MS Sans Serif", Tahoma, sans-serif;
-            color: var(--color-text);
-        }
-
-        .home *,
-        .home *::before,
-        .home *::after {
-            box-sizing: border-box;
-        }
-
-        .home.home--body {
-            margin: 0;
-            background: var(--color-bg);
-        }
-
-        .home.home--page {
-            min-height: 100vh;
-            background: var(--color-bg);
-            color: var(--color-text);
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-24);
-            padding: var(--space-24);
-            position: relative;
-            z-index: 2;
-        }
-
-        .home.home--body::before,
-        .home.home--body::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .home.home--body::before {
-            background-image: repeating-linear-gradient(
-                0deg,
-                rgba(255, 255, 255, 0.08) 0,
-                rgba(255, 255, 255, 0.08) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            opacity: 0.4;
-            mix-blend-mode: soft-light;
-        }
-
-        .home.home--body::after {
-            background-image:
-                radial-gradient(circle at 20% 20%, var(--glow-1), transparent 40%),
-                radial-gradient(circle at 80% 80%, var(--glow-2), transparent 45%);
-            opacity: var(--glow-opacity);
-        }
-
-        .home.home--body.glow-on {
-            --glow-opacity: 0.8;
-        }
-
-        .home__grain-layer {
-            --grain-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 3;
-            opacity: 0;
-            background-image: var(--grain-noise);
-            background-size: 120px 120px;
-            mix-blend-mode: soft-light;
-        }
-
-        .home.home--body.grain-on .home__grain-layer {
-            opacity: 0.85;
-            background-image:
-                var(--grain-noise),
-                repeating-linear-gradient(
-                    90deg,
-                    var(--grain-color) 0,
-                    var(--grain-color) 1px,
-                    transparent 1px,
-                    transparent 3px
-                );
-            background-size: 120px 120px, 3px 3px;
-        }
-
-        .home.home--body.glow-on.grain-on .home__grain-layer {
-            opacity: 0.7;
-        }
-
-        .home__grid-layer {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 3;
-            opacity: 0;
-            background-image:
-                repeating-linear-gradient(
-                    to right,
-                    transparent 0,
-                    transparent 23px,
-                    rgba(255, 255, 255, 0.7) 23px,
-                    rgba(255, 255, 255, 0.7) 24px
-                ),
-                repeating-linear-gradient(
-                    to bottom,
-                    transparent 0,
-                    transparent 23px,
-                    rgba(255, 255, 255, 0.7) 23px,
-                    rgba(255, 255, 255, 0.7) 24px
-                );
-            background-size: 24px 24px;
-            mix-blend-mode: soft-light;
-        }
-
-        .home.home--body.grid-on .home__grid-layer {
-            opacity: 0.75;
-        }
-
-        .home.home--body.glow-on.grid-on .home__grid-layer {
-            opacity: 0.9;
-        }
-
-        .home a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .home a:hover {
-            text-decoration: underline;
-        }
-
-        .home a:focus-visible,
-        .home button:focus-visible,
-        .home [tabindex]:focus-visible {
-            outline: 1px dotted var(--color-text);
-            outline-offset: 2px;
-        }
-
-        .home img {
-            display: block;
-            max-width: 100%;
-            height: auto;
-        }
-
-        .home__container {
-            width: min(1360px, 100%);
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-24);
-        }
-
-        .home__window {
-            border: 1px solid var(--color-border);
-            background: var(--color-panel);
-            box-shadow: var(--bevel);
-        }
-
-        .home__window--hero {
-            display: flex;
-            flex-direction: column;
-            background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-
-        .home__hero-grid {
-            display: grid;
-            grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-            gap: var(--space-16);
-            align-items: start;
-        }
-
-        .home__titlebar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: var(--space-12);
-            padding: var(--space-8) var(--space-16);
-            border-bottom: 1px solid var(--color-border);
-            background: var(--color-panel);
-            box-shadow: var(--bevel);
-        }
-
-        .home__titlebar h1 {
-            margin: 0;
-            font-size: clamp(2.4rem, 3.5vw, 3.6rem);
-            line-height: 1;
-            letter-spacing: 0.5px;
-        }
-
-        .home__titlebar h3 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-        }
-
-        .home__titlebar-controls {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-4);
-        }
-
-        .home__control {
-            width: 12px;
-            height: 12px;
-            border: 1px solid var(--color-border);
-            background: var(--color-bg);
-            box-shadow: var(--bevel);
-        }
-
-        .home__hero-body {
-            min-height: 140px;
-            padding: var(--space-16);
-        }
-
-        .home__panel {
-            width: min(520px, 100%);
-            justify-self: end;
-            border: 1px solid var(--color-border);
-            background: var(--color-panel);
-            box-shadow: var(--bevel);
-            display: flex;
-            flex-direction: column;
-            color: var(--color-text);
-        }
-
-        .home__panel-titlebar {
-            align-items: center;
-        }
-
-        .home__panel-title {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-8);
-            font-size: 0.95rem;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-        }
-
-        .home__panel-title h2 {
-            margin: 0;
-            font-size: 0.95rem;
-            font-weight: 700;
-        }
-
-        .home__panel-icon {
-            width: 16px;
-            height: 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .home__panel-body {
-            padding: var(--space-16);
-            display: grid;
-            gap: var(--space-12);
-        }
-
-        .home__control-form {
-            display: grid;
-            gap: var(--space-12);
-        }
-
-        .home__control {
-            display: grid;
-            grid-template-columns: 24px 1fr;
-            gap: var(--space-12);
-            align-items: center;
-            min-height: 40px;
-            padding: var(--space-4) var(--space-8);
-        }
-
-        .home__control--select {
-            grid-template-columns: 24px auto minmax(120px, 1fr);
-            align-items: center;
-            column-gap: var(--space-12);
-        }
-
-        .home__control--select::before {
-            content: "";
-            width: 20px;
-            height: 20px;
-            border: 1px solid var(--color-border);
-            background: var(--color-bg);
-            box-shadow: var(--bevel);
-            grid-column: 1;
-        }
-
-        .home__control--select span,
-        .home__control--select select {
-            grid-column: 2;
-        }
-
-        .home__control--select span {
-            grid-column: 2;
-        }
-
-        .home__control--select select {
-            grid-column: 3;
-            justify-self: start;
-            width: min(200px, 100%);
-        }
-
-        .home__panel input[type="checkbox"] {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 1px solid var(--color-border);
-            background: var(--color-bg);
-            display: grid;
-            place-items: center;
-            box-shadow: var(--bevel);
-            margin: 0;
-        }
-
-        .home__panel input[type="checkbox"]::before {
-            content: "";
-            width: 10px;
-            height: 10px;
-            transform: scale(0);
-            background: var(--accent-2);
-        }
-
-        .home__panel input[type="checkbox"]:checked::before {
-            transform: scale(1);
-        }
-
-        .home__panel select {
-            appearance: none;
-            background: var(--color-bg);
-            color: var(--color-text);
-            border: 1px solid var(--color-border);
-            padding: 10px 34px 10px 12px;
-            box-shadow: var(--bevel);
-            min-height: 40px;
-            width: 100%;
-            background-image:
-                linear-gradient(45deg, transparent 50%, var(--color-text) 50%),
-                linear-gradient(135deg, var(--color-text) 50%, transparent 50%);
-            background-position: calc(100% - 16px) 50%, calc(100% - 9px) 50%;
-            background-size: 5px 5px;
-            background-repeat: no-repeat;
-        }
-
-        .home__grid {
-            display: grid;
-            grid-template-columns: repeat(12, minmax(0, 1fr));
-            gap: var(--space-16);
-        }
-
-        .activity-card {
-            border: 1px solid var(--color-border);
-            background: var(--color-panel);
-            box-shadow: var(--bevel);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .activity-card.right {
-            background: var(--color-panel);
-            color: var(--color-text);
-        }
-
-        .home__card {
-            grid-column: span 6;
-        }
-
-        .home__card-titlebar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: var(--space-12);
-            padding: var(--space-8) var(--space-12);
-            border-bottom: 1px solid var(--color-border);
-            background: var(--color-panel);
-            box-shadow: var(--bevel);
-        }
-
-        .home__card-body {
-            display: grid;
-            grid-template-columns: 96px 1fr;
-            gap: var(--space-16);
-            align-items: center;
-            padding: var(--space-16);
-        }
-
-        .icon-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .icon-box.right {
-            justify-content: center;
-        }
-
-        .home__icon-link {
-            width: 72px;
-            height: 72px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--color-border);
-            background: var(--color-bg);
-            box-shadow: var(--bevel);
-            cursor: pointer;
-            min-width: 40px;
-            min-height: 40px;
-        }
-
-        .home__icon-link img {
-            width: 40px;
-            height: 40px;
-            filter: brightness(0) invert(1);
-        }
-
-        .home__icon-link:hover {
-            background: var(--color-text);
-        }
-
-        .home__icon-link:hover img {
-            filter: brightness(0);
-        }
-
-        .home__icon-link:active {
-            transform: translate(1px, 1px);
-            box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        .card-text {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-8);
-        }
-
-        .card-text p {
-            margin: 0;
-            color: var(--color-muted);
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        @media (max-width: 1024px) {
-            .home.home--page {
-                padding: var(--space-16);
-            }
-
-            .home__hero-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .home__grid {
-                grid-template-columns: repeat(8, minmax(0, 1fr));
-            }
-
-            .home__card {
-                grid-column: span 8;
-            }
-
-            .home__window--hero {
-                background-size: 32px 32px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .home.home--page {
-                padding: var(--space-12);
-            }
-
-            .home__grid {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-            }
-
-            .home__card {
-                grid-column: span 4;
-            }
-
-            .home__card-body {
-                grid-template-columns: 1fr;
-            }
-
-            .home__icon-link {
-                width: 64px;
-                height: 64px;
-            }
-
-            .home__panel {
-                width: 100%;
-                justify-self: stretch;
-            }
-
-            .home__titlebar h1 {
-                font-size: clamp(2rem, 6vw, 2.6rem);
-            }
-        }
-
-        @media (max-width: 360px) {
-            .home.home--page {
-                padding: var(--space-8);
-            }
-
-            .home__card-body {
-                padding: var(--space-12);
-            }
-
-            .home__titlebar {
-                padding: var(--space-8);
-            }
-
-            .home__card-titlebar {
-                padding: var(--space-8);
-            }
-        }
-    </style>
 </head>
 
 <body class="home home--body grid-on glow-on">
-
+    
     <div class="home__grain-layer" aria-hidden="true"></div>
     <div class="home__grid-layer" aria-hidden="true"></div>
 
     <main class="home home--page">
         <div class="home__container">
-            <header class="home__hero">
+            <section class="home__hero-section">
                 <div class="home__hero-grid">
                     <div class="home__window home__window--hero">
                         <div class="home__titlebar">
@@ -587,8 +47,8 @@
                                 <span class="home__control"></span>
                             </div>
                         </div>
-                            <div class="home__panel-body">
-                                <form class="home__control-form" aria-label="Quick controls">
+                        <div class="home__panel-body">
+                            <form class="home__control-form" aria-label="Quick controls">
                                 <label class="home__control">
                                     <input id="grain" type="checkbox">
                                     <span>Grain</span>
@@ -608,12 +68,12 @@
                                         <option>Mono Warm</option>
                                         <option>CRT Grid</option>
                                     </select>
-                                    </label>
-                                </form>
-                            </div>
-                        </article>
+                                </label>
+                            </form>
+                        </div>
+                    </article>
                 </div>
-            </header>
+            </section> <!-- CHANGED CLOSING TAG -->
 
             <div class="main-content home__grid" aria-labelledby="activity-board-title">
                 <article class="activity-card home__card">
@@ -671,7 +131,7 @@
                             </a>
                         </div>
                         <div class="card-text">
-                            <p>Stuck on typography? Get AI-driven font pairings that match your project's vibe and visual hierarchy.</p>
+                            <p>Stuck on typography? Get font pairings that match your project's vibe and visual hierarchy.</p>
                         </div>
                     </div>
                 </article>
@@ -737,8 +197,7 @@
                 </article>
             </div>
         </div>
-
-            </main>
+    </main>
 
     <script>
         (() => {
@@ -809,5 +268,4 @@
     </script>
 
 </body>
-
 </html>

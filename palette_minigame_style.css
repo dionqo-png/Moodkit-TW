@@ -303,27 +303,3 @@ h1 {
     background: #316da8;
 }
 
-
-/* Footer */
-footer {
-    background-color: #000;
-    color: #fff;
-    padding: 1.5rem 4rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.8rem;
-    margin-top: 4rem;
-}
-
-footer img {
-    width: 1em;
-    height: 1em;
-}
-
-.language-select {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-}
