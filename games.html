@@ -6,6 +6,7 @@
     <link rel="icon" href="/imgs/favicon.png" />
     <link rel="stylesheet" href="games_style.css">
     <script src="global.js" defer></script>
+    <script src="minigame_engine.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoodKit</title>
 </head>
@@ -13,17 +14,110 @@
 <body>
 
     <div id="main">
-        
-    </div>
+        <div class="folder-wrap">
+            <div class="window-bar">
+                <span class="window-title">GAMES</span>
+                <div class="window-controls">_ □ x</div>
+            </div>
+            <div class="game-folder">
 
-    <footer>
-        <div class="language-select">
-            <span>🌐</span> English <img src="imgs/down.png">
+                <div class="folder-header">
+                    <span>C:\USER\DESKTOP\GAMES</span>
+                    <span>⌕</span>
+                </div>
+
+                <div class="game-selector">
+                    <div class="icon-box">
+                        <button class="file-entry active" data-target="rgb-game">
+                            <img src="imgs/RGB.png" alt="RGB Icon" class="file-icon">
+                            <span class="file-name">guess_rgb.exe</span>
+                        </button>
+                    </div>
+
+                    <div class="icon-box">
+                        <button class="file-entry disabled">
+                            <img src="imgs/unknown.png" alt="?" class="file-icon"> <span
+                                class="file-name">coming_soon.txt</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="copyright">
-            Copyright © 2025. All rights reserved.
+
+        <div class="game-space">
+            <div id="rgb-game" class="game-content active">
+                <h1>Match the RGB values to the target color</h1>
+                <div class="rgb-game-layout">
+                    <div class="terminal-window">
+                        <div class="window-bar">
+                            <span class="window-title">/usr/bin/my_color.png</span>
+                            <div class="window-controls">_ □ x</div>
+                        </div>
+                        <div class="window-content" id="user-window-content">
+                            <div id="not-found-state" class="state-visible">
+                                <p class="terminal-text">
+                                    > ERROR 404<br>
+                                    > COLOR NOT FOUND.<br>
+                                    > AWAITING SUBMISSION...
+                                </p>
+                            </div>
+                            <div id="user-reveal-state" class="state-hidden">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls-container">
+                        <div class="sliders-wrapper">
+                            <div class="terminal-slider-group">
+                                <label>R_VAL:</label>
+                                <input type="range" id="red-slider" min="0" max="255" value="0" class="terminal-range">
+                                <span class="slider-val" id="red-tooltip">000</span>
+                            </div>
+                            <div class="terminal-slider-group">
+                                <label>G_VAL:</label>
+                                <input type="range" id="green-slider" min="0" max="255" value="0"
+                                    class="terminal-range">
+                                <span class="slider-val" id="green-tooltip">000</span>
+                            </div>
+                            <div class="terminal-slider-group">
+                                <label>B_VAL:</label>
+                                <input type="range" id="blue-slider" min="0" max="255" value="0" class="terminal-range">
+                                <span class="slider-val" id="blue-tooltip">000</span>
+                            </div>
+                        </div>
+
+                        <button id="submit-btn" class="terminal-btn">[ EXECUTE_SUBMISSION ]</button>
+
+                        <div id="feedback-box" class="terminal-feedback hidden">
+                            <div class="terminal-log">
+                                <p>> TARGET RGB: <span id="target-rgb">0</span></p>
+                                <p>> ACCURACY: <span id="accuracy-val">0</span>%</p>
+                                <p>> GRADE_ASSIGNED: <span id="grade-val">F</span></p>
+                            </div>
+                            <button id="new-color-btn" class="terminal-btn secondary">[ INITIALIZE_NEW ]</button>
+                        </div>
+                    </div>
+
+                    <div class="terminal-window">
+                        <div class="window-bar">
+                            <span class="window-title">/var/www/target.png</span>
+                            <div class="window-controls">_ □ x</div>
+                        </div>
+
+                        <div class="window-content">
+                            <div id="target-window-content" style="width: 100%; height: 100%;"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="memory-game" class="game-content">
+                <h2>Memory Game</h2>
+                <p>Coming soon...</p>
+            </div>
         </div>
-    </footer>
+    </div>
 
 </body>
 

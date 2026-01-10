@@ -67,6 +67,10 @@ select, input {
     width: 100%;
 }
 
+input {
+    width: 90%;
+}
+
 select:focus, input:focus {
     border-color: var(--accent);
 }
