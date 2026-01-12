@@ -1,18 +1,18 @@
 /* sound_style.css */
 
 :root {
-  /* Win95 Greyscale Palette */
-  --bg: #050505;
-  --grid: rgba(255, 255, 255, 0.1);
-  --text: #ffffff;
-  --border-light: #ffffff;
-  --border-dark: #444444;
-  --panel: #1a1a1a;
-  
-  /* Profile Colors (Neon variants for black background) */
-  --fire-glow: #ff5500;
-  --water-glow: #0088ff;
-  --earth-glow: #00ff55;
+    /* Win95 Greyscale Palette */
+    --bg: #050505;
+    --grid: rgba(255, 255, 255, 0.1);
+    --text: #ffffff;
+    --border-light: #ffffff;
+    --border-dark: #444444;
+    --panel: #1a1a1a;
+
+    /* Profile Colors (Neon variants for black background) */
+    --fire-glow: #ff5500;
+    --water-glow: #0088ff;
+    --earth-glow: #00ff55;
 }
 
 * {
@@ -23,14 +23,11 @@
 
 body {
     background-color: var(--bg);
-    /* The Abstract Grid Background */
-    background-image:
-        linear-gradient(90deg, var(--grid) 1px, transparent 1px),
-        linear-gradient(0deg, var(--grid) 1px, transparent 1px);
     background-size: 40px 40px;
-    
+
     color: var(--text);
-    font-family: 'Courier New', Courier, monospace; /* Keeping Courier for that 'Terminal' feel */
+    font-family: 'Courier New', Courier, monospace;
+    /* Keeping Courier for that 'Terminal' feel */
     height: 100vh;
     width: 100vw;
     display: flex;
@@ -45,17 +42,19 @@ body {
     width: 100%;
     height: 100%;
     /* Add a subtle vignette to focus the center */
-    box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
 }
 
 .title {
     position: absolute;
     top: 20px;
     left: 20px;
-    font-size: 6rem; /* Slightly smaller to fit UI */
-    font-family: "MS Sans Serif","Tahoma",sans-serif;
+    font-size: 6rem;
+    /* Slightly smaller to fit UI */
+    font-family: "MS Sans Serif", "Tahoma", sans-serif;
     color: transparent;
-    -webkit-text-stroke: 2px var(--text); /* Outline text effect */
+    -webkit-text-stroke: 2px var(--accent);
+    /* Outline text effect */
     letter-spacing: -2px;
     pointer-events: none;
     z-index: 1;
@@ -70,34 +69,121 @@ body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    
+
     /* The "Windows 95" Wireframe Look */
-    border: 2px solid var(--text); 
+    border: 2px solid var(--text);
     background-size: cover;
     background-position: center;
-    
+
     /* Smooth transition for the JS opacity changes */
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    
+
     /* Text/Icon Style */
     font-size: 2rem;
     text-shadow: 0 2px 0 #000;
 }
 
+.ascii-content {
+    font-size: 4px;
+    line-height: 4px;
+    white-space: pre;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    /* Herda a cor definida no pai */
+
+    /* Centralização absoluta dentro da bubble */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* Importante: para o click no texto não falhar o trigger do pai */
+    pointer-events: none;
+    user-select: none;
+}
+
+.thunder {
+    line-height: 3px;
+    font-size: 4px;
+}
+
+.water {
+    left:60%;
+    line-height: 3px;
+    font-size: 3px;
+}
+
+.rain {
+    line-height: 2px;
+    font-size: 2px;
+}
+
+.fire {
+    top: 45%;
+    line-height: 4px;
+    font-size: 4px;
+}
+
+.flame {
+    line-height: 2px;
+    font-size: 2px;
+}
+
+.wood {
+    line-height: 2px;
+    font-size: 2px;
+}
+
+.forest {
+    line-height: 4px;
+    font-size: 5px;
+}
+
+.leaves {
+    left: 55%;
+    line-height: 2px;
+    font-size: 2px;
+}
+
+.wind {
+    left: 70%;
+    line-height: 2px;
+    font-size: 2px;
+}
+
+.bird {
+    top: 55%;
+    left: 55%;
+    line-height: 3px;
+    font-size: 3px;
+}
+
 /* Hover Effect: Glitchy shift */
 .sound-bubble:hover {
-    transform: translate(-2px, -2px); /* Pop up slightly */
-    box-shadow: 4px 4px 0px var(--border-dark); /* Retro shadow */
+    transform: translate(-2px, -2px);
+    /* Pop up slightly */
+    box-shadow: 4px 4px 0px var(--grain2-color);
+    /* Retro shadow */
     z-index: 10;
     border-color: #fff;
 }
 
-.blink { animation: blink 1s infinite; }
-@keyframes blink { 50% { opacity: 0; } }
+.blink {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
 
 /* Show Sidebar ONLY on wide screens */
 @media (min-width: 1200px) {
-    .retro-sidebar { display: flex; }
+    .retro-sidebar {
+        display: flex;
+    }
 }
 
 
@@ -113,20 +199,87 @@ body {
 /* We keep your colors but make them darker/richer for the black BG */
 
 /* FIRE */
-.fire-master       { width: 230px; height: 230px; background-color: #b35900; bottom: 10%; left: 8%; }
-.fire-layer-flame  { width: 130px; height: 130px; background-color: #804000; bottom: 38%; left: 18%; }
-.fire-layer-wood   { width: 110px; height: 110px; background-color: #804000; bottom: 8%; left: 2%; }
+.fire-master {
+    width: 230px;
+    height: 230px;
+    background-color: #b35900;
+    bottom: 10%;
+    left: 8%;
+}
+
+.fire-layer-flame {
+    width: 130px;
+    height: 130px;
+    background-color: #804000;
+    bottom: 38%;
+    left: 18%;
+}
+
+.fire-layer-wood {
+    width: 110px;
+    height: 110px;
+    background-color: #804000;
+    bottom: 8%;
+    left: 2%;
+}
 
 /* WATER */
-.water-master      { width: 270px; height: 270px; background-color: #004080; bottom: 20%; left: 40%; }
-.water-layer-rain  { width: 140px; height: 140px; background-color: #002b55; bottom: 50%; left: 35%; }
-.water-layer-thunder{ width: 120px; height: 120px; background-color: #002b55; bottom: 8%; left: 37%; }
+.water-master {
+    width: 270px;
+    height: 270px;
+    background-color: #004080;
+    bottom: 20%;
+    left: 40%;
+}
+
+.water-layer-rain {
+    width: 140px;
+    height: 140px;
+    background-color: #002b55;
+    bottom: 50%;
+    left: 35%;
+}
+
+.water-layer-thunder {
+    width: 120px;
+    height: 120px;
+    background-color: #002b55;
+    bottom: 8%;
+    left: 37%;
+}
 
 /* EARTH */
-.earth-master      { width: 280px; height: 280px; background-color: #2d5a1e; top: 10%; right: 10%; }
-.earth-layer-forest{ width: 150px; height: 150px; background-color: #1e3c14; top: 5%; right: 30%; }
-.earth-layer-bird  { width: 120px; height: 120px; background-color: #1e3c14; top: 5%; right: 3%; }
-.earth-layer-wind  { width: 130px; height: 130px; background-color: #1e3c14; top: 55%; right: 5%; } 
+.earth-master {
+    width: 280px;
+    height: 280px;
+    background-color: #2d5a1e;
+    top: 10%;
+    right: 10%;
+}
+
+.earth-layer-forest {
+    width: 150px;
+    height: 150px;
+    background-color: #1e3c14;
+    top: 5%;
+    right: 30%;
+}
+
+.earth-layer-bird {
+    width: 120px;
+    height: 120px;
+    background-color: #1e3c14;
+    top: 5%;
+    right: 3%;
+}
+
+.earth-layer-wind {
+    width: 130px;
+    height: 130px;
+    background-color: #1e3c14;
+    top: 55%;
+    right: 5%;
+}
 
 /* --- SLIDER (Retro System Bar) --- */
 .master-control {
@@ -136,12 +289,13 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
-    
+
     /* Panel Look */
     background: var(--bg);
     border: 2px solid var(--text);
     padding: 10px 15px;
-    box-shadow: 4px 4px 0 #000; /* Hard shadow */
+    box-shadow: 4px 4px 0 #000;
+    /* Hard shadow */
 }
 
 #vol-icon {
@@ -153,26 +307,71 @@ body {
     width: 200px;
     height: 24px;
     background-color: #000;
-    
+
     /* Retro Bevel Effect */
     border-top: 2px solid #555;
     border-left: 2px solid #555;
     border-bottom: 2px solid #fff;
     border-right: 2px solid #fff;
-    
+
     position: relative;
     cursor: pointer;
 }
 
+/* Filter layers & effects*/
+.grain-layer {
+    --grain-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 900;
+    opacity: 0;
+    background-image: var(--grain-noise);
+    background-size: 120px 120px;
+    mix-blend-mode: soft-light;
+}
+
+body.grain-on .grain-layer {
+    opacity: 0.55;
+    background-image:
+        var(--grain-noise),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.7) 0, rgba(255,255,255,0.7) 2px, transparent 2px, transparent 4px);
+}
+
+.grid-layer {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    background-image:
+        linear-gradient(90deg, var(--grid, rgba(255,255,255,0.1)) 1px, transparent 1px),
+        linear-gradient(0deg, var(--grid, rgba(255,255,255,0.1)) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transition: opacity 0.3s ease;
+}
+
+body.grid-on .grid-layer {
+    opacity: 1;
+}
+
+.accent-text {
+    color: var(--accent) !important;
+    
+    text-shadow: 0 0 1px var(--glow-1); 
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
 /* The Progress Bar (Digital blocks look) */
 .slider-fill {
-    width: 50%; /* JS updates this */
+    width: 50%;
+    /* JS updates this */
     height: 100%;
-    background: repeating-linear-gradient(
-        90deg,
-        var(--text) 0px,
-        var(--text) 4px,
-        transparent 4px,
-        transparent 6px
-    ); /* Creates a 'loading bar' block effect */
+    background: repeating-linear-gradient(90deg,
+            var(--text) 0px,
+            var(--text) 4px,
+            transparent 4px,
+            transparent 6px);
+    /* Creates a 'loading bar' block effect */
 }

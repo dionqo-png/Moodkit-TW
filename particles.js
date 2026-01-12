@@ -186,7 +186,7 @@ function init() {
     renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(width, height);
-    renderer.setClearColor(0x000000);
+    renderer.setClearColor(0x000000, 0);
     containerEl.appendChild(renderer.domElement);
 
     // Controls

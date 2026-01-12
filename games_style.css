@@ -19,7 +19,7 @@ body {
     width: 100vw;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
     color: #000;
 }
 
@@ -86,7 +86,7 @@ header {
     display: flex;
     align-items: center;
     padding: 2px;
-    box-shadow: inset -1px -1px 0 #333, inset 1px 1px 0 #777;
+    box-shadow: inset -1px -1px 0 hsl(0, 0%, 20%), inset 1px 1px 0 #777;
 }
 
 .toggle-knob {
@@ -112,12 +112,12 @@ header {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     padding: 0;
 }
 
 .folder-wrap {
-    box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 4px 4px 0 var(--grain2-color);
 }
 
 h1 {
@@ -208,8 +208,8 @@ h1 {
 
 .file-entry:active,
 .file-entry.active {
-    background-color: rgba(51, 154, 240, 0.3);
-    border: 2px dotted #339af0;
+    background-color: var(--grain2-color);
+    border: 2px dotted var(--accent);
 }
 
 .file-entry.disabled {
@@ -239,7 +239,7 @@ h1 {
     height: 300px;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 4px 0px rgba(255, 255, 255, 0.2);
+    box-shadow: 4px 4px 0px var(--grain2-color);
 }
 
 .window-bar {
@@ -364,18 +364,18 @@ h1 {
 .terminal-btn:hover {
     background: #fff;
     color: black;
-    box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 4px 4px 0 var(--grain2-color);
 }
 
 .terminal-btn.secondary {
-    border-color: #15ff00;
-    color: #15ff00;
+    border-color: var(--accent);
+    color: var(--accent);
     font-size: 1.1rem;
     margin-top: 15px;
 }
 
 .terminal-btn.secondary:hover {
-    background: #15ff00;
+    background: var(--accent);
     color: black;
 }
 
@@ -396,6 +396,44 @@ h1 {
 #grade-val {
     font-weight: bold;
     font-size: 1.2rem;
+}
+
+/* Filter layers & effects*/
+.grain-layer {
+    --grain-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 900;
+    opacity: 0;
+    background-image: var(--grain-noise);
+    background-size: 120px 120px;
+    mix-blend-mode: soft-light;
+}
+
+body.grain-on .grain-layer {
+    opacity: 0.55;
+    background-image:
+        var(--grain-noise),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.7) 0, rgba(255,255,255,0.7) 2px, transparent 2px, transparent 4px);
+}
+
+.grid-layer {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    background-image:
+        linear-gradient(90deg, var(--grid, rgba(255,255,255,0.1)) 1px, transparent 1px),
+        linear-gradient(0deg, var(--grid, rgba(255,255,255,0.1)) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transition: opacity 0.3s ease;
+}
+
+body.grid-on .grid-layer {
+    opacity: 1;
 }
 
 /* Footer */

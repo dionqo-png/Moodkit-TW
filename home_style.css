@@ -9,13 +9,9 @@
     --color-soft: #BDBDBD;
     --color-dim: #666666;
     --color-border: #FFFFFF;
-    --accent: #7affc7;
     --accent-2: #63b7ff;
     --accent-3: #ff5a99;
-    --glow-1: rgba(122, 255, 199, 0.18);
-    --glow-2: rgba(99, 183, 255, 0.16);
     --glow-opacity: 0.5;
-    --grain-color: rgba(255, 255, 255, 0.55);
     --space-4: 4px;
     --space-8: 8px;
     --space-12: 12px;
@@ -118,21 +114,21 @@
     pointer-events: none;
     z-index: 3;
     opacity: 0;
-    background-image:
-        repeating-linear-gradient(
-            to right,
-            transparent 0,
-            transparent 23px,
-            rgba(255, 255, 255, 0.7) 23px,
-            rgba(255, 255, 255, 0.7) 24px
-        ),
-        repeating-linear-gradient(
-            to bottom,
-            transparent 0,
-            transparent 23px,
-            rgba(255, 255, 255, 0.7) 23px,
-            rgba(255, 255, 255, 0.7) 24px
-        );
+        background-image:
+            repeating-linear-gradient(
+                to right,
+                transparent 0,
+                transparent 23px,
+                rgba(255, 255, 255, 0.7) 23px,
+                rgba(255, 255, 255, 0.7) 24px
+            ),
+            repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent 23px,
+                rgba(255, 255, 255, 0.7) 23px,
+                rgba(255, 255, 255, 0.7) 24px
+            );
     background-size: 24px 24px;
     mix-blend-mode: soft-light;
 }
@@ -183,11 +179,11 @@
 
 .home__window--hero {
     display: flex;
-    flex-direction: column;
-    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    flex-direction: column; /* <--- THIS fixes the side-by-side issue */
     background-size: 24px 24px;
+
 }
+
 
 .home__hero-grid {
     display: grid;
@@ -238,6 +234,10 @@
 .home__hero-body {
     min-height: 140px;
     padding: var(--space-16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
 }
 
 .home__panel {
@@ -466,6 +466,88 @@
     color: var(--color-muted);
     line-height: 1.5;
     font-size: 0.95rem;
+}
+
+/* voice */
+.voice-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-16);
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.voice-trigger:hover {
+    opacity: 0.8;
+    text-shadow: 0 0 8px var(--grain2-color);
+}
+
+.mic-mask {
+    width: 48px;
+    height: 48px;
+    background-color: var(--accent);
+    -webkit-mask-image: url('imgs/microphone.svg');
+    mask-image: url('imgs/microphone.svg');
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    transition: background-color 0.3s ease;
+}
+
+.voice-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#voice-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    transition: color 0.3s ease;
+}
+
+#voice-subtext {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+.voice-trigger.listening .mic-mask {
+    background-color: var(--accent);
+}
+
+.voice-trigger.listening .voice-icon {
+    filter: drop-shadow(0 0 12px var(--grain2-color));
+    animation: pulse 1s infinite alternate;
+}
+@keyframes pulse {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(1.1); opacity: 0.8; }
+}
+
+.voice-trigger.listening #voice-text {
+    color: var(--accent);
+}
+
+.voice-trigger.listening #voice-subtext {
+    opacity: 1;
+}
+
+.activity-card.highlight-active {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--grain2-color);
+    transform: scale(1.02);
+    transition: all 0.4s;
+    z-index: 10;
 }
 
 @media (max-width: 1024px) {

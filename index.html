@@ -4,12 +4,13 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>moodkit - retro-pro creative toolkit</title>
+  <title>MoodKit</title>
   <meta name="description" content="Moodkit is a retro-pro toolkit for palettes, sound, and filters. Build visual atmospheres fast, train your eye, and speed up your creative flow.">
   <link rel="canonical" href="https://moodkit.app/">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='none' stroke='black' stroke-width='2'/%3E%3Ccircle cx='24' cy='8' r='6' fill='black'/%3E%3C/svg%3E">
+  <link rel="icon" href="/imgs/favicon.png" />
   <meta name="theme-color" content="#000000">
   <meta name="color-scheme" content="dark light">
+  <script src="global.js" defer></script>
 
   <meta property="og:title" content="moodkit - retro-pro creative toolkit">
   <meta property="og:description" content="Moodkit is a retro-pro toolkit for palettes, sound, and filters. Build visual atmospheres fast, train your eye, and speed up your creative flow.">
@@ -349,16 +350,6 @@
       padding: 0 6px;
       font-size: 13px;
       color: var(--muted);
-    }
-
-    .panel-readout {
-      margin-top: 8px;
-      padding: 12px 14px;
-      border: 2px solid var(--border);
-      font-size: 13px;
-      color: var(--muted);
-      background: #f2f2f2;
-      min-height: 54px;
     }
 
     input[type="checkbox"],
@@ -740,11 +731,11 @@
               <form class="control-form" aria-label="Quick controls">
                 <label class="control">
                   <input id="grain" type="checkbox">
-                  <span>Grain</span>
+                  <span>Grain overlay</span>
                 </label>
                 <label class="control">
                   <input id="grid" type="checkbox" checked>
-                  <span>Grid overlay</span>
+                  <span>Grid background</span>
                 </label>
                 <label class="control">
                   <input id="glow" type="checkbox" checked>
@@ -759,7 +750,6 @@
                   </select>
                 </label>
               </form>
-              <div class="panel-readout" id="panel-readout"></div>
             </div>
           </article>
 
@@ -777,7 +767,6 @@
       const root = document.documentElement;
       const wordmark = document.getElementById("wordmark");
       const live = document.getElementById("wordmark-live");
-      const readout = document.getElementById("panel-readout");
       const grain = document.getElementById("grain");
       const grid = document.getElementById("grid");
       const glow = document.getElementById("glow");
@@ -863,70 +852,6 @@
         thresholds = readThresholds();
       }, { passive: true });
 
-      /* Module: quick panel readout */
-      if (readout) {
-        const presets = {
-          "Neon Clean": {
-            accent: "#7affc7",
-            accent2: "#63b7ff",
-            accent3: "#ff5a99",
-            glow1: "rgba(122, 255, 199, 0.18)",
-            glow2: "rgba(99, 183, 255, 0.16)",
-            grain: "rgba(255, 255, 255, 0.6)",
-            titlebar: "#f7f7f7",
-            titlebar2: "#e6e6e6"
-          },
-          "Mono Warm": {
-            accent: "#ffd480",
-            accent2: "#ff9f4f",
-            accent3: "#ff7b7b",
-            glow1: "rgba(255, 212, 128, 0.18)",
-            glow2: "rgba(255, 159, 79, 0.16)",
-            grain: "rgba(255, 212, 128, 0.65)",
-            titlebar: "#f2eee3",
-            titlebar2: "#e5dccb"
-          },
-          "CRT Grid": {
-            accent: "#6cff6c",
-            accent2: "#24a0ff",
-            accent3: "#ff4b8b",
-            glow1: "rgba(108, 255, 108, 0.18)",
-            glow2: "rgba(36, 160, 255, 0.16)",
-            grain: "rgba(108, 255, 108, 0.65)",
-            titlebar: "#edf5ed",
-            titlebar2: "#dde9dd"
-          }
-        };
-
-        const applyPreset = (name) => {
-          const preset = presets[name] || presets["Neon Clean"];
-          root.style.setProperty("--accent", preset.accent);
-          root.style.setProperty("--accent-2", preset.accent2);
-          root.style.setProperty("--accent-3", preset.accent3);
-          root.style.setProperty("--glow-1", preset.glow1);
-          root.style.setProperty("--glow-2", preset.glow2);
-          root.style.setProperty("--grain-color", preset.grain);
-          root.style.setProperty("--titlebar", preset.titlebar);
-          root.style.setProperty("--titlebar-2", preset.titlebar2);
-        };
-
-        const updateReadout = () => {
-          const gr = grain && grain.checked ? "On" : "Off";
-          const grd = grid && grid.checked ? "On" : "Off";
-          const glw = glow && glow.checked ? "On" : "Off";
-          const preset = presetSelect ? presetSelect.value : "Neon Clean";
-          if (grain) document.body.classList.toggle("grain-on", grain.checked);
-          if (grid) document.body.classList.toggle("grid-on", grid.checked);
-          if (glow) document.body.classList.toggle("glow-on", glow.checked);
-          applyPreset(preset);
-          readout.textContent = `Grain: ${gr} | Grid: ${grd} | Glow: ${glw} | Preset: ${preset}`;
-        };
-
-        updateReadout();
-        [grain, grid, glow, presetSelect].forEach((el) => {
-          if (el) el.addEventListener("change", updateReadout);
-        });
-      }
     })();
   </script>
 </body>

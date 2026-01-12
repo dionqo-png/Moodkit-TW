@@ -117,6 +117,44 @@ select:focus, input:focus {
     gap: 0.5rem;
 }
 
+/* Filter layers & effects*/
+.grain-layer {
+    --grain-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 900;
+    opacity: 0;
+    background-image: var(--grain-noise);
+    background-size: 120px 120px;
+    mix-blend-mode: soft-light;
+}
+
+body.grain-on .grain-layer {
+    opacity: 0.55;
+    background-image:
+        var(--grain-noise),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.7) 0, rgba(255,255,255,0.7) 2px, transparent 2px, transparent 4px);
+}
+
+.grid-layer {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    background-image:
+        linear-gradient(90deg, var(--grid, rgba(255,255,255,0.1)) 2px, transparent 2px),
+        linear-gradient(0deg, var(--grid, rgba(255,255,255,0.1)) 2px, transparent 2px);
+    background-size: 40px 40px;
+    transition: opacity 0.3s ease;
+}
+
+body.grid-on .grid-layer {
+    opacity: 1;
+}
+
 /* Dynamic Classes applied by JS */
 .preview-heading {
     font-size: 2rem;

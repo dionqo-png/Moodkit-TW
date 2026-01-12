@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
+
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" href="/imgs/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Briefings</title>
   <script src="global.js" defer></script>
@@ -9,6 +11,9 @@
 </head>
 
 <body>
+  <div class="grain-layer" aria-hidden="true"></div>
+  <div class="grid-layer" aria-hidden="true"></div>
+
   <main class="page">
     <div class="topbar">
       <div class="topbar__field">briefings</div>
@@ -18,15 +23,8 @@
       <!-- Briefing 1 (Mulher 1) - ARTE -->
       <a class="circle-card" href="briefing/briefing-1.pdf" download aria-label="Download Briefing 1">
         <div class="circle">
-          <video
-            class="circle__video"
-            src="../videos/mulher-1.mp4"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-          ></video>
+          <video class="circle__video" src="../videos/mulher-1.mp4" autoplay muted loop playsinline
+            preload="metadata"></video>
         </div>
         <div class="circle-card__label">Arte</div>
       </a>
@@ -34,15 +32,8 @@
       <!-- Briefing 2 (Mulher 2) - DESIGN -->
       <a class="circle-card" href="briefing/briefing-2.pdf" download aria-label="Download Briefing 2">
         <div class="circle">
-          <video
-            class="circle__video"
-            src="../videos/mulher-2.mp4"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-          ></video>
+          <video class="circle__video" src="../videos/mulher-2.mp4" autoplay muted loop playsinline
+            preload="metadata"></video>
         </div>
         <div class="circle-card__label">Design</div>
       </a>
@@ -50,19 +41,13 @@
       <!-- Briefing 3 (Homem) - DESIGN -->
       <a class="circle-card" href="briefing/briefing-3.pdf" download aria-label="Download Briefing 3">
         <div class="circle">
-          <video
-            class="circle__video"
-            src="../videos/homem.mp4"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-          ></video>
+          <video class="circle__video" src="../videos/homem.mp4" autoplay muted loop playsinline
+            preload="metadata"></video>
         </div>
         <div class="circle-card__label">Design</div>
       </a>
     </section>
   </main>
 </body>
+
 </html>

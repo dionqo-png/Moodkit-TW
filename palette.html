@@ -11,7 +11,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
-  
+
   <script src="colorpalette.js" defer></script>
 
   <script type="importmap">
@@ -26,16 +26,19 @@
 </head>
 
 <body>
+  <div class="grain-layer" aria-hidden="true"></div>
+  <div class="grid-layer" aria-hidden="true"></div>
+
   <div class="topbar" role="banner">
     <div class="brand">
       <div class="brand-dot" aria-hidden="true"></div>
       <div class="brand-title">Color Palette</div>
     </div>
     <div class="actions" role="toolbar" aria-label="Palette actions">
-      <button class="btn" id="btn-new" type="button">Nova</button>
-      <button class="btn" id="btn-save" type="button">Guardar</button>
+      <button class="btn" id="btn-new" type="button">New</button>
+      <button class="btn" id="btn-save" type="button">Save</button>
       <label class="file-btn" for="image-input">
-        <span>Imagem</span>
+        <span>Image</span>
         <input id="image-input" type="file" accept="image/*">
       </label>
     </div>
@@ -47,18 +50,18 @@
     </main>
     <aside class="panel saved-panel" aria-label="Paletas guardadas">
       <div class="panel-header">
-        <div class="panel-title">Paletas guardadas</div>
-        <button class="btn btn-small" id="btn-clear-saved" type="button">Limpar</button>
+        <div class="panel-title">Saved palettes</div>
+        <button class="btn btn-small" id="btn-clear-saved" type="button">Clear</button>
       </div>
       <div class="panel-body">
-        <div id="saved-empty" class="muted">Sem paletas guardadas</div>
+        <div id="saved-empty" class="muted">No saved palettes</div>
         <div id="saved-list" class="saved-list" role="list"></div>
       </div>
     </aside>
   </div>
 
   <section id="particle-section"></section>
-  
+
 </body>
 
 </html>

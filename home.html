@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/imgs/favicon.png" />
@@ -10,7 +11,7 @@
 </head>
 
 <body class="home home--body grid-on glow-on">
-    
+
     <div class="home__grain-layer" aria-hidden="true"></div>
     <div class="home__grid-layer" aria-hidden="true"></div>
 
@@ -27,7 +28,17 @@
                                 <span class="home__control"></span>
                             </div>
                         </div>
-                        <div class="home__hero-body" aria-hidden="true"></div>
+                        <div class="home__hero-body">
+                            <button id="voice-trigger" class="voice-trigger" aria-label="Enable voice navigation">
+                                <span class="voice-icon">
+                                    <div class="mic-mask"></div>
+                                </span>
+                                <div class="voice-text-wrapper">
+                                    <span id="voice-text">Navigate through the activity board with your voice</span>
+                                    <span id="voice-subtext"></span>
+                                </div>
+                            </button>
+                        </div>
                     </div>
                     <article class="home__panel" aria-labelledby="quick-panel-title">
                         <div class="home__card-titlebar home__panel-titlebar">
@@ -51,11 +62,11 @@
                             <form class="home__control-form" aria-label="Quick controls">
                                 <label class="home__control">
                                     <input id="grain" type="checkbox">
-                                    <span>Grain</span>
+                                    <span>Grain overlay</span>
                                 </label>
                                 <label class="home__control">
                                     <input id="grid" type="checkbox" checked>
-                                    <span>Grid overlay</span>
+                                    <span>Grid background</span>
                                 </label>
                                 <label class="home__control">
                                     <input id="glow" type="checkbox" checked>
@@ -73,6 +84,7 @@
                         </div>
                     </article>
                 </div>
+
             </section> <!-- CHANGED CLOSING TAG -->
 
             <div class="main-content home__grid" aria-labelledby="activity-board-title">
@@ -91,7 +103,8 @@
                             </a>
                         </div>
                         <div class="card-text">
-                            <p>Upload an image to extract its dominant colors or generate a cohesive color scheme for your next moodboard instantly.</p>
+                            <p>Upload an image to extract its dominant colors or generate a cohesive color scheme for
+                                your next moodboard instantly.</p>
                         </div>
                     </div>
                 </article>
@@ -111,7 +124,8 @@
                             </a>
                         </div>
                         <div class="card-text">
-                            <p>Sharpen your design eye with interactive challenges. Test your color matching skills and typography knowledge.</p>
+                            <p>Sharpen your design eye with interactive challenges. Test your color matching skills and
+                                typography knowledge.</p>
                         </div>
                     </div>
                 </article>
@@ -131,7 +145,8 @@
                             </a>
                         </div>
                         <div class="card-text">
-                            <p>Stuck on typography? Get font pairings that match your project's vibe and visual hierarchy.</p>
+                            <p>Stuck on typography? Get font pairings that match your project's vibe and visual
+                                hierarchy.</p>
                         </div>
                     </div>
                 </article>
@@ -151,7 +166,8 @@
                             </a>
                         </div>
                         <div class="card-text">
-                            <p>Generate design prompts and hypothetical client briefs to practice your skills and build your portfolio.</p>
+                            <p>Generate design prompts and hypothetical client briefs to practice your skills and build
+                                your portfolio.</p>
                         </div>
                     </div>
                 </article>
@@ -171,7 +187,8 @@
                             </a>
                         </div>
                         <div class="card-text">
-                            <p>Apply retro, dithered, or noise effects to your images directly in the browser to achieve that raw aesthetic.</p>
+                            <p>Apply retro, dithered, or noise effects to your images directly in the browser to achieve
+                                that raw aesthetic.</p>
                         </div>
                     </div>
                 </article>
@@ -191,7 +208,8 @@
                             </a>
                         </div>
                         <div class="card-text">
-                            <p>Customize the ambient background noise to boost your focus. Choose from white noise, rain, or cafe sounds.</p>
+                            <p>Customize the ambient background noise to boost your focus. Choose from white noise,
+                                rain, or cafe sounds.</p>
                         </div>
                     </div>
                 </article>
@@ -199,73 +217,6 @@
         </div>
     </main>
 
-    <script>
-        (() => {
-            "use strict";
-            const body = document.body;
-            if (!body || !body.classList.contains("home")) return;
-
-            const grain = document.getElementById("grain");
-            const grid = document.getElementById("grid");
-            const glow = document.getElementById("glow");
-            const presetSelect = document.getElementById("preset-select");
-
-            if (!grain || !grid || !glow || !presetSelect) return;
-
-            const presets = {
-                "Neon Clean": {
-                    accent: "#7affc7",
-                    accent2: "#63b7ff",
-                    accent3: "#ff5a99",
-                    glow1: "rgba(122, 255, 199, 0.18)",
-                    glow2: "rgba(99, 183, 255, 0.16)",
-                    grain: "rgba(255, 255, 255, 0.6)"
-                },
-                "Mono Warm": {
-                    accent: "#ffd480",
-                    accent2: "#ff9f4f",
-                    accent3: "#ff7b7b",
-                    glow1: "rgba(255, 212, 128, 0.18)",
-                    glow2: "rgba(255, 159, 79, 0.16)",
-                    grain: "rgba(255, 212, 128, 0.65)"
-                },
-                "CRT Grid": {
-                    accent: "#6cff6c",
-                    accent2: "#24a0ff",
-                    accent3: "#ff4b8b",
-                    glow1: "rgba(108, 255, 108, 0.18)",
-                    glow2: "rgba(36, 160, 255, 0.16)",
-                    grain: "rgba(108, 255, 108, 0.65)"
-                }
-            };
-
-            const applyPreset = (name) => {
-                const preset = presets[name] || presets["Neon Clean"];
-                body.style.setProperty("--accent", preset.accent);
-                body.style.setProperty("--accent-2", preset.accent2);
-                body.style.setProperty("--accent-3", preset.accent3);
-                body.style.setProperty("--glow-1", preset.glow1);
-                body.style.setProperty("--glow-2", preset.glow2);
-                body.style.setProperty("--grain-color", preset.grain);
-            };
-
-            const updateReadout = () => {
-                const gr = grain.checked ? "On" : "Off";
-                const grd = grid.checked ? "On" : "Off";
-                const glw = glow.checked ? "On" : "Off";
-                const preset = presetSelect.value || "Neon Clean";
-                body.classList.toggle("grain-on", grain.checked);
-                body.classList.toggle("grid-on", grid.checked);
-                body.classList.toggle("glow-on", glow.checked);
-                applyPreset(preset);
-            };
-
-            updateReadout();
-            [grain, grid, glow, presetSelect].forEach((el) => {
-                el.addEventListener("change", updateReadout);
-            });
-        })();
-    </script>
-
 </body>
+
 </html>

@@ -1,7 +1,7 @@
 /* HEADER CONTAINER - Match home page style */
 header {
     background-color: var(--color-bg, #000) !important;
-    color: var(--color-text, #fff) !important;
+    color: var(--accent, #fff) !important;
     padding: var(--space-8, 8px) var(--space-16, 16px);
     display: flex;
     align-items: center;
@@ -41,10 +41,10 @@ body.home header {
 
 .logo-btn {
     background-color: var(--color-bg, #000);
-    color: var(--color-text, #fff);
+    color: var(--accent, #fff);
     padding: 6px 12px;
     border-radius: 0;
-    border: 1px solid var(--color-border, #fff);
+    border: 1px solid var(--accent, #fff);
     box-shadow: var(--bevel, inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.15));
     text-decoration: none;
     font-weight: bold;
@@ -113,14 +113,14 @@ body.home header {
     width: 12px;
     left: 3px;
     bottom: 3px;
-    background-color: var(--color-text, #fff);
+    background-color: var(--grain2-color, #fff);
     transition: .4s;
     border-radius: 0;
     box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.5);
 }
 
 input:checked + .slider {
-    background-color: var(--accent-2, #63b7ff);
+    background-color: var(--accent, #63b7ff);
 }
 
 input:checked + .slider:before {
