@@ -10,7 +10,7 @@ import {
   createUIBindings, applyTypePreset
 } from "./utils/ui.js";
 
-// Loader hardened for Live Server/Vite
+//  Live Server/Vite
 async function loadText(relPath) {
   const url = new URL(relPath, import.meta.url);
   const res = await fetch(url, { cache: "no-store" });
@@ -74,23 +74,23 @@ const distortMapInput = document.getElementById("distortMapInput");
 let glyphAtlas = null;
 let distortMapEl = null;
 
-// opcionais (se existirem no HTML)
+
 const rendererStatus = document.getElementById("rendererStatus");
 const errorBox = document.getElementById("errorBox");
 
 // Fonte atual: imagem (HTMLImageElement) ou webcam (HTMLVideoElement)
 let sourceType = "upload"; // upload|webcam
-let sourceEl = null;       // HTMLImageElement ou webcamVideo
+let sourceEl = null;      
 let webcamStream = null;
 
-// Estado
+
 const defaults = defaultState();
 const loaded = loadState();
 const state = mergeDeep(defaults, loaded ?? {});
 state.global = state.global ?? {};
 saveState(state);
 
-// UI binding
+// UI 
 const ui = createUIBindings({
   root: document,
   state,
@@ -101,7 +101,7 @@ const ui = createUIBindings({
   }
 });
 
-// Atalhos
+
 window.addEventListener("keydown", (e) => {
   const k = e.key.toLowerCase();
   if (k === "u") setSource("upload");
@@ -120,7 +120,7 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-// Tabs (fonte)
+
 tabUpload.addEventListener("click", () => setSource("upload"));
 tabWebcam.addEventListener("click", () => setSource("webcam"));
 
@@ -279,7 +279,7 @@ fileInput.addEventListener("change", async (e) => {
   try {
     await img.decode();
   } catch {
-    // fallback decode
+   
     await new Promise((resolve, reject) => {
       img.onload = resolve;
       img.onerror = reject;
@@ -343,7 +343,7 @@ function clearError() {
 async function initRenderer() {
   resizeCanvasTo(outCanvas, state.global.canvasSize);
 
-  // 1) tenta WebGL2 primeiro (sem pedir 2D antes)
+  // tenta WebGL2 primeiro (sem pedir 2D antes)
   const gl = createGL(outCanvas);
 
   if (!gl) {
@@ -357,7 +357,7 @@ async function initRenderer() {
     return;
   }
 
-  // 2) tenta carregar/compilar shaders
+  // tenta carregar/compilar shaders
   try {
     const [vs, fs] = await Promise.all([
       loadText("./shaders/crt.vert"),
@@ -386,7 +386,7 @@ async function initRenderer() {
 }
 
 function createCanvas2DRenderer(canvas) {
-  const ctx2d = canvas.getContext("2d"); // Only used here
+  const ctx2d = canvas.getContext("2d"); 
   return {
     type: "canvas2d",
     resize: (sizePx) => resizeCanvasTo(canvas, sizePx),
@@ -438,16 +438,16 @@ function createWebGL2Renderer(gl, program, vao) {
     uMapTex: gl.getUniformLocation(program, "uMapTex"),
   };
 
-  // Textura de input (upload/video)
+  // Textura de input (
   let srcTex = createTexture(gl, 2, 2, { linear: true });
   // Glyph atlas para ASCII
   glyphAtlas = createGlyphAtlas(gl, getCharsetString(state.ascii.charset));
   // Distortion map
   let mapTex = createTexture(gl, 2, 2, { linear: true });
 
-  // FBOs full-res (ping-pong)
+  // ping-pong
   const full = { size: 0, a: null, b: null, fboA: null, fboB: null };
-  // FBOs half-res para bloom
+  // bloom
   const half = { size: 0, a: null, b: null, fboA: null, fboB: null };
 
   function alloc(sizePx) {
@@ -482,10 +482,10 @@ function createWebGL2Renderer(gl, program, vao) {
   }
 
   function setParams() {
-    // Uses the toggle flag directly
+   
     setUniformInt(gl, program, "uShowEffect", state.global.showEffect ? 1 : 0);
 
-    // garantir atlas atualizado para charset
+    
     ensureGlyphAtlas(gl);
 
     setUniform(gl, program, "uPreBlur", state.pre.blur);
@@ -497,7 +497,7 @@ function createWebGL2Renderer(gl, program, vao) {
     const filterMode = (state.global.filter === "ascii") ? 1 : (state.global.filter === "ca" ? 2 : (state.global.filter === "distort" ? 3 : 0));
     setUniformInt(gl, program, "uFilterMode", filterMode);
 
-    // Color palette filter API: mode off|sepia|mono|high|vapor, intensity 0..1 (0 = off)
+    // Color palette filter API: mode off|sepia|mono|high|vapor
     const colorModeInt = state.color?.mode === "sepia" ? 1 : (state.color?.mode === "mono" ? 2 : (state.color?.mode === "high" ? 3 : (state.color?.mode === "vapor" ? 4 : 0)));
     setUniformInt(gl, program, "uColorMode", colorModeInt);
     setUniform(gl, program, "uColorIntensity", state.color?.intensity ?? 0);
@@ -603,7 +603,7 @@ function createWebGL2Renderer(gl, program, vao) {
       timeSec
     });
 
-    // pre blur (2 short iterations) when blur > 0 se blur > 0
+    // pre blur
     let preOutTex = full.a;
     if (state.pre.blur > 0.0) {
       drawPass({
@@ -629,10 +629,10 @@ function createWebGL2Renderer(gl, program, vao) {
 
     // 1) CRT -> full.b
     if (state.global.filter === "ca") {
-      // 1a) CA init -> full.b
+      
       drawPass({ pass: 6, inputTex: preOutTex, targetFBO: full.fboB, targetSize: full.size, srcSize, timeSec });
 
-      // 1b) CA steps ping-pong
+      
       let readTex = full.b;
       let writeFBO = full.fboA;
       const steps = Math.max(1, state.ca.steps | 0);
@@ -642,10 +642,10 @@ function createWebGL2Renderer(gl, program, vao) {
         else { readTex = full.b; writeFBO = full.fboA; }
       }
 
-      // 1c) CA colorize -> full.b (reuse bloomTex slot for state texture)
+      // 1c) CA colorize 
       drawPass({ pass: 8, inputTex: preOutTex, bloomTex: readTex, targetFBO: full.fboB, targetSize: full.size, srcSize, timeSec });
     } else if (state.global.filter === "ascii") {
-      // ASCII: render directly to screen, skip bloom/composite
+      // ASCII:
       drawPass({
         pass: 1,
         inputTex: preOutTex,
@@ -656,7 +656,7 @@ function createWebGL2Renderer(gl, program, vao) {
       });
       return;
     } else {
-      // 1) CRT/Distort -> full.b
+      // 1) CRT/Distort 
       drawPass({
         pass: 1,
         inputTex: preOutTex,
@@ -667,7 +667,7 @@ function createWebGL2Renderer(gl, program, vao) {
       });
     }
 
-    // 2) Bloom extract (half-res) -> half.a
+    // 2) Bloom extract 
     drawPass({
       pass: 2,
       inputTex: full.b,
@@ -677,13 +677,13 @@ function createWebGL2Renderer(gl, program, vao) {
       timeSec
     });
 
-    // 3) Blur half-res ping-pong (4 iterations)
+    // 3) Blur half-res ping-pong 
     drawPass({ pass: 3, inputTex: half.a, targetFBO: half.fboB, targetSize: half.size, srcSize, timeSec });
     drawPass({ pass: 3, inputTex: half.b, targetFBO: half.fboA, targetSize: half.size, srcSize, timeSec });
     drawPass({ pass: 3, inputTex: half.a, targetFBO: half.fboB, targetSize: half.size, srcSize, timeSec });
     drawPass({ pass: 3, inputTex: half.b, targetFBO: half.fboA, targetSize: half.size, srcSize, timeSec });
 
-    // 4) Composite + aberration -> full.a
+    // 4) Composite + aberration 
     drawPass({
       pass: 4,
       inputTex: full.b,
@@ -765,7 +765,7 @@ function loop(t) {
   }
 }
 
-// --- Fonte / UI Estado ---
+
 function clearCanvas() {
   if (sourceType === "webcam") stopWebcam();
   sourceEl = null;
@@ -884,13 +884,13 @@ async function record5s() {
   }
 }
 
-// Export quick animation (3s, no audio) to webm/mp4 when supported
+// Export quick animation 
 async function exportAnimation3s() {
   try {
     exportAnimBtn.disabled = true;
     exportAnimBtn.textContent = "Recording...";
 
-    // ensure a stable frame before capture
+    
     await waitForStableFrame();
 
     const stream = outCanvas.captureStream(30);
@@ -932,7 +932,7 @@ function pickBestRecorderOptions() {
   return {};
 }
 
-// Guardar imagem processada (upload)
+// Guardar imagem processada 
 function saveProcessedImage() {
   if (!sourceEl) return;
   waitForStableFrame().then(() => {
@@ -1021,7 +1021,7 @@ function createGlyphAtlas(gl, charset) {
   return { tex, grid, count, charset: chars };
 }
 
-// --- Init ---
+// --- inicialização ---
 await initRenderer();
 
 setSource("upload");

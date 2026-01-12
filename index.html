@@ -29,7 +29,7 @@
 
   <style>
     /* =========================
-       CSS Reset
+       CSS 
        ========================= */
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -93,9 +93,7 @@
       --grain-color: rgba(255, 255, 255, 0.6);
     }
 
-    /* =========================
-       Base
-       ========================= */
+  
     body {
       font-family: var(--font);
       background: var(--bg);
@@ -209,9 +207,7 @@
 
     main, header, footer, nav, section, article { position: relative; z-index: 2; }
 
-    /* =========================
-       Components
-       ========================= */
+
     .skip-link {
       position: absolute;
       left: 8px;
@@ -611,9 +607,7 @@
       .btn { width: 100%; }
     }
 
-    /* =========================
-       Utilities
-       ========================= */
+
     .sr-only {
       position: absolute;
       width: 1px;
@@ -763,7 +757,7 @@
     (() => {
       "use strict";
 
-      /* Module: wordmark proximity */
+      
       const root = document.documentElement;
       const wordmark = document.getElementById("wordmark");
       const live = document.getElementById("wordmark-live");
