@@ -242,6 +242,10 @@ body {
   background: #000;
 }
 
+#rendererStatus {
+  color: black;
+}
+
 .tiny {
   color: var(--muted);
 }
@@ -354,6 +358,7 @@ body {
 
 .control input[type="range"] {
   width: 100%;
+  accent-color: var(--accent);
 }
 
 .val {

@@ -1,5 +1,3 @@
-/* sound_style.css */
-
 :root {
     /* Win95 Greyscale Palette */
     --bg: #050505;
@@ -27,16 +25,17 @@ body {
 
     color: var(--text);
     font-family: 'Courier New', Courier, monospace;
-    /* Keeping Courier for that 'Terminal' feel */
+
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
 /* --- MAIN CANVAS --- */
-#main {
+html body:not(.home) #main {
+    padding: 0;
     flex: 1;
     position: relative;
     width: 100%;
@@ -81,10 +80,12 @@ body {
     /* Text/Icon Style */
     font-size: 2rem;
     text-shadow: 0 2px 0 #000;
+
+    container-type: size;
 }
 
 .ascii-content {
-    font-size: 4px;
+    font-size: 1.8cqw;
     line-height: 4px;
     white-space: pre;
     margin: 0;
@@ -104,59 +105,59 @@ body {
 }
 
 .thunder {
-    line-height: 3px;
-    font-size: 4px;
+    line-height: 2.5cqw;
+    font-size: 3cqw;
 }
 
 .water {
-    left:60%;
-    line-height: 3px;
-    font-size: 3px;
+    left: 60%;
+    line-height: 1.2cqw;
+    font-size: 1.25cqw;
 }
 
 .rain {
-    line-height: 2px;
-    font-size: 2px;
+    line-height: 1.75cqw;
+    font-size: 1.75cqw;
 }
 
 .fire {
     top: 45%;
-    line-height: 4px;
-    font-size: 4px;
+    line-height: 1.75cqw;
+    font-size: 1.75cqw;
 }
 
 .flame {
-    line-height: 2px;
-    font-size: 2px;
+    line-height: 1.65cqw;
+    font-size: 1.65cqw;
 }
 
 .wood {
-    line-height: 2px;
-    font-size: 2px;
+    line-height: 1.75cqw;
+    font-size: 1.75cqw;
 }
 
 .forest {
-    line-height: 4px;
-    font-size: 5px;
+    line-height: 1.75cqw;
+    font-size: 1.75cqw;
 }
 
 .leaves {
     left: 55%;
-    line-height: 2px;
-    font-size: 2px;
+    line-height: 1.6cqw;
+    font-size: 1.6cqw;
 }
 
 .wind {
     left: 70%;
-    line-height: 2px;
-    font-size: 2px;
+    line-height: 1.75cqw;
+    font-size: 1.75cqw;
 }
 
 .bird {
     top: 55%;
     left: 55%;
-    line-height: 3px;
-    font-size: 3px;
+    line-height: 2.5cqw;
+    font-size: 2.5cqw;
 }
 
 /* Hover Effect: Glitchy shift */
@@ -200,82 +201,82 @@ body {
 
 /* FIRE */
 .fire-master {
-    width: 230px;
-    height: 230px;
+    width: 240px;
+    aspect-ratio: 1 / 1;
     background-color: #b35900;
-    bottom: 10%;
-    left: 8%;
+    bottom: 16%;
+    left: 6%;
 }
 
 .fire-layer-flame {
     width: 130px;
-    height: 130px;
+    aspect-ratio: 1 / 1;
     background-color: #804000;
-    bottom: 38%;
+    bottom: 5%;
     left: 18%;
 }
 
 .fire-layer-wood {
     width: 110px;
-    height: 110px;
+    aspect-ratio: 1 / 1;
     background-color: #804000;
-    bottom: 8%;
+    bottom: 45%;
     left: 2%;
 }
 
 /* WATER */
 .water-master {
     width: 270px;
-    height: 270px;
+    aspect-ratio: 1 / 1;
     background-color: #004080;
-    bottom: 20%;
+    bottom: 21%;
     left: 40%;
 }
 
 .water-layer-rain {
     width: 140px;
-    height: 140px;
+    aspect-ratio: 1 / 1;
     background-color: #002b55;
-    bottom: 50%;
-    left: 35%;
+    bottom: 47%;
+    left: 34%;
 }
 
 .water-layer-thunder {
     width: 120px;
-    height: 120px;
+    aspect-ratio: 1 / 1;
     background-color: #002b55;
     bottom: 8%;
-    left: 37%;
+    left: 40%;
 }
 
 /* EARTH */
 .earth-master {
-    width: 280px;
-    height: 280px;
+    width: 310px;
+    aspect-ratio: 1 / 1;
     background-color: #2d5a1e;
-    top: 10%;
-    right: 10%;
+    top: 12%;
+    right: 5%;
 }
 
 .earth-layer-forest {
     width: 150px;
-    height: 150px;
+    aspect-ratio: 1 / 1;
     background-color: #1e3c14;
-    top: 5%;
-    right: 30%;
+    top: 4%;
+    right: 21%;
 }
 
 .earth-layer-bird {
     width: 120px;
-    height: 120px;
+    aspect-ratio: 1 / 1;
     background-color: #1e3c14;
-    top: 5%;
-    right: 3%;
+    top: 4%;
+    right: 2%;
 }
 
 .earth-layer-wind {
     width: 130px;
-    height: 130px;
+    aspect-ratio: 1 / 1;
     background-color: #1e3c14;
     top: 55%;
     right: 5%;
@@ -335,7 +336,7 @@ body.grain-on .grain-layer {
     opacity: 0.55;
     background-image:
         var(--grain-noise),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.7) 0, rgba(255,255,255,0.7) 2px, transparent 2px, transparent 4px);
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.7) 0, rgba(255, 255, 255, 0.7) 2px, transparent 2px, transparent 4px);
 }
 
 .grid-layer {
@@ -346,8 +347,8 @@ body.grain-on .grain-layer {
     z-index: -1;
     opacity: 0;
     background-image:
-        linear-gradient(90deg, var(--grid, rgba(255,255,255,0.1)) 1px, transparent 1px),
-        linear-gradient(0deg, var(--grid, rgba(255,255,255,0.1)) 1px, transparent 1px);
+        linear-gradient(90deg, var(--grid, rgba(255, 255, 255, 0.1)) 1px, transparent 1px),
+        linear-gradient(0deg, var(--grid, rgba(255, 255, 255, 0.1)) 1px, transparent 1px);
     background-size: 40px 40px;
     transition: opacity 0.3s ease;
 }
@@ -358,8 +359,8 @@ body.grid-on .grid-layer {
 
 .accent-text {
     color: var(--accent) !important;
-    
-    text-shadow: 0 0 1px var(--glow-1); 
+
+    text-shadow: 0 0 1px var(--glow-1);
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
@@ -374,4 +375,249 @@ body.grid-on .grid-layer {
             transparent 4px,
             transparent 6px);
     /* Creates a 'loading bar' block effect */
+}
+
+@media (max-width: 970px) {
+
+    .title {
+        font-size: 5rem;
+    }
+
+    /* FIRE */
+    .fire-master {
+        width: 200px;
+        bottom: 18%;
+        left: 5%;
+    }
+
+    .fire-layer-flame {
+        width: 100px;
+        bottom: 5%;
+        left: 18%;
+    }
+
+    .fire-layer-wood {
+        width: 90px;
+        bottom: 45%;
+        left: 2%;
+    }
+
+    /* WATER */
+    .water-master {
+        width: 260px;
+        bottom: 21%;
+        left: 35%;
+    }
+
+    .water-layer-rain {
+        width: 110px;
+        bottom: 52%;
+        left: 30%;
+    }
+
+    .water-layer-thunder {
+        width: 120px;
+        bottom: 14%;
+        left: 60%;
+    }
+
+    /* EARTH */
+    .earth-master {
+        width: 220px;
+        top: 8%;
+        right: 10%;
+    }
+
+    .earth-layer-forest {
+        width: 110px;
+        top: 4%;
+        right: 35%;
+    }
+
+    .earth-layer-bird {
+        width: 105px;
+        top: 2%;
+        right: 2%;
+    }
+
+    .earth-layer-wind {
+        width: 115px;
+        top: 40%;
+        right: 8%;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .title {
+        font-size: 3.5rem;
+    }
+
+    .master-control {
+        padding: 5px;
+        gap: 8px;
+        bottom: 15px;
+        right: 20px;
+    }
+
+    .slider-track {
+        width: 100px;
+        height: 12px;
+    }
+
+    #vol-icon {
+        font-size: 15px;
+    }
+
+    /* FIRE */
+    .fire-master {
+        width: 150px;
+        bottom: 18%;
+        left: 5%;
+    }
+
+    .fire-layer-flame {
+        width: 75px;
+        bottom: 12%;
+        left: 30%;
+    }
+
+    .fire-layer-wood {
+        width: 75px;
+        bottom: 39%;
+        left: 3%;
+    }
+
+    /* WATER */
+    .water-master {
+        width: 170px;
+        bottom: 31%;
+        left: 50%;
+    }
+
+    .water-layer-rain {
+        width: 95px;
+        bottom: 49%;
+        left: 39%;
+    }
+
+    .water-layer-thunder {
+        width: 90px;
+        bottom: 22%;
+        left: 72%;
+    }
+
+    /* EARTH */
+    .earth-master {
+        width: 150px;
+        top: 6%;
+        right: 12%;
+    }
+
+    .earth-layer-forest {
+        width: 70px;
+        top: 4%;
+        right: 39%;
+    }
+
+    .earth-layer-bird {
+        width: 70px;
+        top: 3%;
+        right: 4%;
+    }
+
+    .earth-layer-wind {
+        width: 75px;
+        top: 24%;
+        right: 6%;
+    }
+}
+
+@media (max-width: 500px) {
+    .title {
+        font-size: 3rem;
+        top: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .title {
+        font-size: 3rem;
+        top: 10px;
+    }
+
+
+
+    /* FIRE */
+    .fire-master {
+        width: 150px;
+        bottom: 9%;
+        left: 5%
+    }
+
+    .fire-layer-flame {
+        width: 75px;
+        bottom: 2%;
+        left: 28%;
+    }
+
+    .fire-layer-wood {
+        width: 75px;
+        bottom: 29%;
+        left: 3%;
+    }
+
+    /* WATER */
+    .water-master {
+        width: 150px;
+        bottom: 28%;
+        left: 37%;
+    }
+
+    .water-layer-rain {
+        width: 90px;
+        bottom: 45%;
+        left: 20%;
+    }
+
+    .water-layer-thunder {
+        width: 80px;
+        bottom: 19%;
+        left: 68%;
+    }
+
+    /* EARTH */
+    .earth-master {
+        width: 155px;
+        top: 12%;
+        right: 12%;
+    }
+
+    .earth-layer-forest {
+        width: 70px;
+        top: 17%;
+        right: 52%;
+    }
+
+    .earth-layer-bird {
+        width: 70px;
+        top: 5%;
+        right: 10%;
+    }
+
+    .earth-layer-wind {
+        width: 75px;
+        top: 32%;
+        right: 6%;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        /* Header, Main (fills space), Footer */
+        min-height: 100vh;
+        margin: 0;
+    }
 }

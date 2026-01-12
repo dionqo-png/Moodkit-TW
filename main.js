@@ -351,7 +351,7 @@ async function initRenderer() {
     pillRenderer.textContent = "Renderer: Canvas2D (fallback)";
     if (rendererStatus) {
       rendererStatus.textContent = "Renderer: Canvas2D (fallback)";
-      rendererStatus.style.background = "#fee2e2";
+      rendererStatus.style.background = "var(--accent3)";
     }
     showError("WebGL2 not available/allowed in this browser. Falling back to Canvas2D (no CRT).");
     return;
@@ -371,7 +371,7 @@ async function initRenderer() {
     pillRenderer.textContent = "Renderer: WebGL2";
     if (rendererStatus) {
       rendererStatus.textContent = "Renderer: WebGL2";
-      rendererStatus.style.background = "#d1fae5";
+      rendererStatus.style.background = "var(--accent)";
     }
     clearError();
   } catch (err) {
@@ -379,7 +379,7 @@ async function initRenderer() {
     pillRenderer.textContent = "Renderer: Canvas2D (fallback)";
     if (rendererStatus) {
       rendererStatus.textContent = "Renderer: Canvas2D (fallback)";
-      rendererStatus.style.background = "#fee2e2";
+      rendererStatus.style.background = "var(--accent3)";
     }
     showError("Failed to compile shaders / init WebGL2 pipeline. Falling back to Canvas2D.\n" + (err?.message ?? err));
   }

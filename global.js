@@ -475,6 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "training": "games-title",
         // Font
         "font": "font-title",
+        "fonts": "font-title",
         "typography": "font-title",
         // Briefings
         "portfolio": "brief-title",

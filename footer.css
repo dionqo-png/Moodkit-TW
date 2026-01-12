@@ -3,7 +3,8 @@
     background-color: #000;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
     padding: 1.5rem 2rem;
-    margin-top: auto; /* Pushes footer to bottom if page is short */
+    margin-top: auto;
+    /* Pushes footer to bottom if page is short */
     position: relative;
     z-index: 10;
 }
@@ -24,6 +25,12 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
-.language-select:hover { color: #fff; }
+
+.language-select:hover {
+    color: #fff;
+}
+
+.copyright {
+    text-align: center;
+}

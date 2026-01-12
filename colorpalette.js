@@ -29,7 +29,10 @@ let savedEmptyEl = null;
 function setup() {
   // cria canvas e mete dentro da div #sketch-container
   const container = document.getElementById("sketch-container");
-  const cnv = createCanvas(900, 520);
+
+  const canvasWidth = container ? container.offsetWidth : 900;
+
+  const cnv = createCanvas(canvasWidth, 520);
   if (container) cnv.parent("sketch-container");
 
   noStroke();
@@ -50,6 +53,15 @@ function draw() {
   desenharPalette();
   desenharGradient();
   desenharMensagem();
+}
+
+function windowResized() {
+  const container = document.getElementById("sketch-container");
+  if (container) {
+    // Ajusta o canvas para a nova largura do container
+    resizeCanvas(container.offsetWidth, 520);
+    // O draw() trata de reposicionar tudo (layout) no próximo frame
+  }
 }
 
 // ---------- UI ----------
@@ -174,13 +186,13 @@ function gerarPaletaFromImage() {
 
   // 1. Dataset Extraction
   const data = [];
-  for (let i = 0; i < gfx.pixels.length; i += 4) 
-    data.push([gfx.pixels[i], gfx.pixels[i+1], gfx.pixels[i+2]]);
+  for (let i = 0; i < gfx.pixels.length; i += 4)
+    data.push([gfx.pixels[i], gfx.pixels[i + 1], gfx.pixels[i + 2]]);
 
   // 2. K-Means (Inline & Optimized)
   let seed = 42, k = 5, iter = 20, centroids = [];
   const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
-  
+
   // Init
   for (let i = 0; i < k; i++) centroids.push(data[Math.floor(rnd() * data.length)]);
 
@@ -190,7 +202,7 @@ function gerarPaletaFromImage() {
     data.forEach(p => {
       let min = Infinity, idx = 0;
       centroids.forEach((c, i) => {
-        const d = (p[0]-c[0])**2 + (p[1]-c[1])**2 + (p[2]-c[2])**2;
+        const d = (p[0] - c[0]) ** 2 + (p[1] - c[1]) ** 2 + (p[2] - c[2]) ** 2;
         if (d < min) { min = d; idx = i; }
       });
       clusters[idx].push(p);
@@ -208,9 +220,9 @@ function gerarPaletaFromImage() {
   }
 
   // 3. Output & UI
-  const hex = centroids.map(c => chroma(c).hex()).sort((a,b) => chroma(a).get('lab.l') - chroma(b).get('lab.l'));
+  const hex = centroids.map(c => chroma(c).hex()).sort((a, b) => chroma(a).get('lab.l') - chroma(b).get('lab.l'));
   palette = chroma.scale(hex).mode("lab").colors(NUM_CORES);
-  
+
   gfx.remove();
   typeof ajustarCorDoMeio === 'function' && ajustarCorDoMeio();
   selectedIndex = selectedSavedIndex = -1;

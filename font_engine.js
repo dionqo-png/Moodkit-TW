@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
             card.innerHTML = `
                 <div class="card-header">
                     <span>${p.h} + ${p.b}</span>
-                    <span>${p.desc}</span>
+                    <span class="right">${p.desc}</span>
                 </div>
                 <div class="font-preview">
                     <div class="preview-heading" style="font-family: '${p.h}', sans-serif; font-weight: 700;">${p.h}</div>
